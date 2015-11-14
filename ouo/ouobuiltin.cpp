@@ -9,6 +9,7 @@
 #include "ouobuiltin.h"
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "mpc.h"
 
 extern mpc_parser_t * ouo;
@@ -100,15 +101,17 @@ ouoval * builtin_error(ouoenv * e, ouoval * a) {
 
 ouoval * builtin_print(ouoenv * e, ouoval * a) {
     
+    //a->type = OuOVAL_STR;
     /* Print each argument followed by a space */
     int i;
     for (i = 0; i < a->count - 1; i++) {
-        ouoval_print(a->cell[i]); putchar(' ');
+        ouoval_print(a->cell[i]);putchar(' ');
     }
     i++;
     ouoval_print(a->cell[i]);
     
     /* Print a newline and delete arguments */
+    putchar('\n');
     ouoval_del(a);
     
     return ouoval_sexpr();
@@ -253,10 +256,13 @@ ouoval * builtin_op(ouoenv * e, ouoval * a, const char* op) {
         /* Pop the next element */
         ouoval * y = ouoval_pop(a, 0);
         
+        
         /* Perform operation */
         if (strcmp(op, "+") == 0) { x->num += y->num; }
         if (strcmp(op, "-") == 0) { x->num -= y->num; }
         if (strcmp(op, "*") == 0) { x->num *= y->num; }
+        if (strcmp(op, "^") == 0) { x->num = pow(x->num,y->num); }
+        if (strcmp(op, "%") == 0) { x->num %= y->num; }
         if (strcmp(op, "/") == 0) {
             if (y->num == 0) {
                 ouoval_del(x); ouoval_del(y);
@@ -353,4 +359,12 @@ ouoval * builtin_mul(ouoenv * e, ouoval * a) {
 
 ouoval * builtin_div(ouoenv * e, ouoval * a) {
     return builtin_op(e, a, "/");
+}
+
+ouoval * builtin_power(ouoenv * e, ouoval * a) {
+    return builtin_op(e, a, "^");
+}
+
+ouoval * builtin_mod(ouoenv * e, ouoval * a) {
+    return builtin_op(e, a, "%");
 }

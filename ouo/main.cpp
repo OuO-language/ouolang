@@ -47,6 +47,9 @@ void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "\\", builtin_lambda);
     ouoenv_add_builtin(e, "def", builtin_def);
     ouoenv_add_builtin(e, "=",   builtin_put);
+    /* new variable functions
+     */
+    //ouoenv_add_builtin(e, "new", builtin_new);
     
     ouoenv_add_builtin(e, "if", builtin_if);
     ouoenv_add_builtin(e, "==", builtin_eq);
@@ -62,6 +65,7 @@ void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "tail", builtin_tail);
     ouoenv_add_builtin(e, "eval", builtin_eval);
     ouoenv_add_builtin(e, "join", builtin_join);
+    
     
     /* Mathematical Functions */
     ouoenv_add_builtin(e, "+", builtin_add);
@@ -82,11 +86,11 @@ int main(int argc, const char * argv[]) {
     
     mpca_lang(MPCA_LANG_DEFAULT,
               "                                                            \
-              number     : /-?[0-9]+/ ;                                    \
-              symbol     : /[a-zA-Z0-9_+\\-*\\/\\\\=<>!&]+/ ;              \
+              number     : /-?[0-9]+\\.?[0-9]*/ ;                          \
+              symbol     : /[a-zA-Z0-9_+\\-*\\/\\\\=<>!&%^]+/ ;              \
               string     : /\"(\\\\.|[^\"])*\"/ ;                          \
               comment    : /;[^\\r\\n]*/ ;                                 \
-              sexpr      : '(' <expression>* ')' ;                         \
+              sexpr      : '[' <expression>* ']' ;                         \
               qexpr      : '{' <expression>* '}' ;                         \
               expression : <number> | <symbol> | <string>                  \
                          | <comment> | <sexpr> | <qexpr> ;                 \
@@ -113,7 +117,7 @@ int main(int argc, const char * argv[]) {
             ouoval_del(x);
         }
     } else {
-        fprintf(stderr, "OuOlang v0.0.1\nBuilt at %s compiled with gcc version %s\n", __DATE__, __VERSION__);
+        fprintf(stderr, "OuO Programming Language v0.0.1\nBuilt at %s compiled with gcc version %s\n", __DATE__, __VERSION__);
         while (1) {
             char* input = readline(ouo_prompt);
             mpc_result_t r;

@@ -103,8 +103,8 @@ ouoval * ouoval_read(mpc_ast_t* t) {
     
     /* Fill this list with any valid expression contained within */
     for (int i = 0; i < t->children_num; i++) {
-        if (strcmp(t->children[i]->contents, "(") == 0) { continue; }
-        if (strcmp(t->children[i]->contents, ")") == 0) { continue; }
+        if (strcmp(t->children[i]->contents, "[") == 0) { continue; }
+        if (strcmp(t->children[i]->contents, "]") == 0) { continue; }
         if (strcmp(t->children[i]->contents, "}") == 0) { continue; }
         if (strcmp(t->children[i]->contents, "{") == 0) { continue; }
         if (strcmp(t->children[i]->tag,  "regex") == 0) { continue; }
@@ -186,7 +186,7 @@ void ouoval_print(ouoval * v) {
             printf("Error: %s", v->err); break;
         case OuOVAL_SYM:   printf("%s", v->sym); break;
         case OuOVAL_STR:   ouoval_print_str(v); break;
-        case OuOVAL_SEXPR: ouoval_expr_print(v, '(', ')'); break;
+        case OuOVAL_SEXPR: ouoval_expr_print(v, '[', ']'); break;
         case OuOVAL_QEXPR: ouoval_expr_print(v, '{', '}'); break;
     }
 }

@@ -36,6 +36,10 @@ ouoval * builtin_def(ouoenv * e, ouoval * a);
 
 ouoval * builtin_put(ouoenv * e, ouoval * a);
 
+/* new
+ */
+//ouoval * builtin_new(ouoenv *e, ouoval * a);
+
 ouoval * builtin_if(ouoenv * e, ouoval* a);
 
 ouoval * builtin_eq(ouoenv * e, ouoval * a);
@@ -76,6 +80,11 @@ ouoval * builtin_sub(ouoenv * e, ouoval * a);
 ouoval * builtin_mul(ouoenv * e, ouoval * a);
 
 ouoval * builtin_div(ouoenv * e, ouoval * a);
+
+ouoval * builtin_power(ouoenv * e, ouoval * a);
+
+ouoval * builtin_mod(ouoenv * e, ouoval * a);
+
 
 
 #endif /* OUOBUILTIN_H */
