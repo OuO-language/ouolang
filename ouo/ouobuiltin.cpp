@@ -265,6 +265,9 @@ ouoval * builtin_op(ouoenv * e, ouoval * a, const char* op) {
             }
             x->num /= y->num;
         }
+        if (strcmp(op, "^") == 0) {
+            x->num = pow(x->num, y->num);
+        }
         
         /* Delete element now finished with */
         ouoval_del(y);
@@ -353,4 +356,8 @@ ouoval * builtin_mul(ouoenv * e, ouoval * a) {
 
 ouoval * builtin_div(ouoenv * e, ouoval * a) {
     return builtin_op(e, a, "/");
+}
+
+ouoval * builtin_power(ouoenv * e, ouoval * a) {
+    return builtin_op(e, a, "^");
 }
