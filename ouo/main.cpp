@@ -68,10 +68,9 @@ void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "-", builtin_sub);
     ouoenv_add_builtin(e, "*", builtin_mul);
     ouoenv_add_builtin(e, "/", builtin_div);
-    ouoenv_add_builtin(e, "^", builtin_power);
 }
 
-int main(int argc, const char * argv[]) {
+int main(int argc, const char * argv[]) {    
     number = mpc_new("number");
     symbol = mpc_new("symbol");
     strings = mpc_new("string");
@@ -114,7 +113,7 @@ int main(int argc, const char * argv[]) {
             ouoval_del(x);
         }
     } else {
-        fprintf(stderr, "OuOlang v0.0.1\nBuilt at %s compiled with gcc version %s\n", __DATE__, __VERSION__);
+        fprintf(stderr, "OuOlang v0.0.1\nBuilt at %s %s compiled with gcc version %s\n", __DATE__, __TIME__, __VERSION__);
         while (1) {
             char* input = readline(ouo_prompt);
             mpc_result_t r;
