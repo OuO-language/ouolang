@@ -49,7 +49,7 @@ ouoval * ouoval_err(const char * fmt, ...) {
     return v;
 }
 
-ouoval * ouoval_num(long x) {
+ouoval * ouoval_num(double x) {
     ouoval * v = (ouoval *)malloc(sizeof(ouoval));
     v->type = OuOVAL_NUM;
     v->num = x;
@@ -117,7 +117,7 @@ ouoval * ouoval_read(mpc_ast_t* t) {
 
 ouoval * ouoval_read_num(mpc_ast_t* t) {
     errno = 0;
-    long x = strtol(t->contents, NULL, 10);
+    double x = strtod(t->contents, NULL);
     return errno != ERANGE ?
     ouoval_num(x) : ouoval_err("invalid number");
 }
@@ -170,7 +170,7 @@ void ouoval_print(ouoval * v) {
     switch (v->type) {
             /* In the case the type is a number print it */
             /* Then 'break' out of the switch. */
-        case OuOVAL_NUM: printf("%li", v->num); break;
+        case OuOVAL_NUM: printf("%g", v->num); break;
         case OuOVAL_FUNC:
             if (v->builtin) {
                 printf("<function>");

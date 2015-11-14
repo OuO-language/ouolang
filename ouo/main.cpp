@@ -71,7 +71,7 @@ void ouoenv_add_builtins(ouoenv * e) {
 }
 
 int main(int argc, const char * argv[]) {
-    number   = mpc_new("number");
+    number = mpc_new("number");
     symbol = mpc_new("symbol");
     strings = mpc_new("string");
     comment = mpc_new("comment");
@@ -82,7 +82,7 @@ int main(int argc, const char * argv[]) {
     
     mpca_lang(MPCA_LANG_DEFAULT,
               "                                                            \
-              number     : /-?[0-9]+/ ;                                    \
+              number     : /-?[0-9]+\\.?[0-9]*/ ;                          \
               symbol     : /[a-zA-Z0-9_+\\-*\\/\\\\=<>!&]+/ ;              \
               string     : /\"(\\\\.|[^\"])*\"/ ;                          \
               comment    : /;[^\\r\\n]*/ ;                                 \
