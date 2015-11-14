@@ -8,11 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		FEF33FA51BF38068004AF7E8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEF33FA41BF38068004AF7E8 /* main.cpp */; };
-		FEF33FAD1BF38917004AF7E8 /* mpc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEF33FAB1BF38917004AF7E8 /* mpc.cpp */; settings = {ASSET_TAGS = (); }; };
+		FEF33FAD1BF38917004AF7E8 /* mpc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEF33FAB1BF38917004AF7E8 /* mpc.cpp */; };
 		FEF33FAF1BF39203004AF7E8 /* libedit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FEF33FAE1BF39203004AF7E8 /* libedit.tbd */; };
-		FEF992141BF59DA10084BA26 /* ouoval.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEF992121BF59DA10084BA26 /* ouoval.cpp */; settings = {ASSET_TAGS = (); }; };
-		FEF992171BF59E3A0084BA26 /* ouoenv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEF992151BF59E3A0084BA26 /* ouoenv.cpp */; settings = {ASSET_TAGS = (); }; };
-		FEF9921A1BF59FD00084BA26 /* ouobuiltin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEF992181BF59FD00084BA26 /* ouobuiltin.cpp */; settings = {ASSET_TAGS = (); }; };
+		FEF448121BF72E0B00D15D44 /* libgmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEF448111BF72E0B00D15D44 /* libgmp.a */; };
+		FEF448291BF7777D00D15D44 /* libgmpxx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FEF448281BF7777D00D15D44 /* libgmpxx.a */; };
+		FEF992141BF59DA10084BA26 /* ouoval.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEF992121BF59DA10084BA26 /* ouoval.cpp */; };
+		FEF992171BF59E3A0084BA26 /* ouoenv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEF992151BF59E3A0084BA26 /* ouoenv.cpp */; };
+		FEF9921A1BF59FD00084BA26 /* ouobuiltin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEF992181BF59FD00084BA26 /* ouobuiltin.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -32,6 +34,8 @@
 		FEF33FA41BF38068004AF7E8 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		FEF33FAB1BF38917004AF7E8 /* mpc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mpc.cpp; sourceTree = "<group>"; };
 		FEF33FAE1BF39203004AF7E8 /* libedit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libedit.tbd; path = usr/lib/libedit.tbd; sourceTree = SDKROOT; };
+		FEF448111BF72E0B00D15D44 /* libgmp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgmp.a; path = ../../../../usr/local/lib/libgmp.a; sourceTree = "<group>"; };
+		FEF448281BF7777D00D15D44 /* libgmpxx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgmpxx.a; path = ../../../../usr/local/lib/libgmpxx.a; sourceTree = "<group>"; };
 		FEF992121BF59DA10084BA26 /* ouoval.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ouoval.cpp; sourceTree = "<group>"; };
 		FEF992151BF59E3A0084BA26 /* ouoenv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ouoenv.cpp; sourceTree = "<group>"; };
 		FEF992181BF59FD00084BA26 /* ouobuiltin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ouobuiltin.cpp; sourceTree = "<group>"; };
@@ -43,6 +47,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FEF448291BF7777D00D15D44 /* libgmpxx.a in Frameworks */,
+				FEF448121BF72E0B00D15D44 /* libgmp.a in Frameworks */,
 				FEF33FAF1BF39203004AF7E8 /* libedit.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -53,6 +59,8 @@
 		FEF33F981BF38067004AF7E8 = {
 			isa = PBXGroup;
 			children = (
+				FEF448281BF7777D00D15D44 /* libgmpxx.a */,
+				FEF448111BF72E0B00D15D44 /* libgmp.a */,
 				FEF33FAE1BF39203004AF7E8 /* libedit.tbd */,
 				FEF33FA31BF38068004AF7E8 /* ouo */,
 				FEF33FA21BF38068004AF7E8 /* Products */,
@@ -228,7 +236,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/ouo/includes/";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/ouo/includes/",
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -237,7 +249,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/ouo/includes/";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/ouo/includes/",
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
