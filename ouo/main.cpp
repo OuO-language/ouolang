@@ -42,6 +42,7 @@ void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "error", builtin_error);
     ouoenv_add_builtin(e, "print", builtin_print);
     ouoenv_add_builtin(e, "println", builtin_println);
+    ouoenv_add_builtin(e, "con", builtin_con);
     
     /* Variable Functions */
     ouoenv_add_builtin(e, "\\", builtin_lambda);
@@ -72,6 +73,8 @@ void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "-", builtin_sub);
     ouoenv_add_builtin(e, "*", builtin_mul);
     ouoenv_add_builtin(e, "/", builtin_div);
+    ouoenv_add_builtin(e, "^", builtin_power);
+    ouoenv_add_builtin(e, "%", builtin_mod);
 }
 
 int main(int argc, const char * argv[]) {
@@ -87,7 +90,7 @@ int main(int argc, const char * argv[]) {
     mpca_lang(MPCA_LANG_DEFAULT,
               "                                                            \
               number     : /-?[0-9]+\\.?[0-9]*/ ;                          \
-              symbol     : /[a-zA-Z0-9_+\\-*\\/\\\\=<>!&%^]+/ ;              \
+              symbol     : /[a-zA-Z0-9_+\\-*\\/\\\\=<>!&%^]+/ ;            \
               string     : /\"(\\\\.|[^\"])*\"/ ;                          \
               comment    : /;[^\\r\\n]*/ ;                                 \
               sexpr      : '[' <expression>* ']' ;                         \

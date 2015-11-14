@@ -123,6 +123,24 @@ ouoval * builtin_println(ouoenv * e, ouoval * a) {
     return r;
 }
 
+ouoval * builtin_con(ouoenv * e, ouoval * a) {
+    
+    if (a->count == 0) {
+        return ouoval_err("You let me do concrete bird when you pass no argument.");
+    }
+    
+    int i = 0;
+    
+    char *con_str_ptr = (char *)malloc(200); // Max length of the sum of string is 200
+    con_str_ptr[0] = '\0';
+    for (i = 0; i < a->count; i++) {
+        strcpy(con_str_ptr + strlen(con_str_ptr), a->cell[i]->str);
+    }
+    ouoval *con_str = ouoval_str(con_str_ptr);
+    //ouoval_print(con_str);
+    return con_str;
+}
+
 ouoval * builtin_lambda(ouoenv * e, ouoval * a) {
     /* Check Two arguments, each of which are Q-Expressions */
     OuOASSERT_NUM("\\", a, 2);

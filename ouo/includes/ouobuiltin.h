@@ -36,6 +36,8 @@ ouoval * builtin_def(ouoenv * e, ouoval * a);
 
 ouoval * builtin_put(ouoenv * e, ouoval * a);
 
+ouoval * builtin_con(ouoenv *e, ouoval * a);
+
 /* new
  */
 //ouoval * builtin_new(ouoenv *e, ouoval * a);
