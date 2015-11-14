@@ -76,7 +76,16 @@ ouoval * ouoval_err(const char* fmt, ...);
 ouoval * ouoval_num(double x);
 
 /**
- *  @brief  Create a new mpf_t type ouoval
+ *  @brief  Create a new value type ouoval
+ *
+ *  @param m mpf_class number
+ *
+ *  @return ouoval
+ */
+ouoval * ouoval_value(mpf_class& m);
+
+/**
+ *  @brief  Create a new value type ouoval
  *
  *  @param x string type number
  *

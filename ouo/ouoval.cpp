@@ -11,8 +11,8 @@
 #include <stdarg.h>
 #include <string.h>
 #include <errno.h>
+#include <cmath>
 #include "mpc.h"
-
 
 const char * ouotype_name(int t) {
     switch(t) {
@@ -55,6 +55,41 @@ ouoval * ouoval_num(double x) {
     ouoval * v = (ouoval *)malloc(sizeof(ouoval));
     v->type = OuOVAL_NUM;
     v->num = x;
+    return v;
+}
+
+ouoval * ouoval_value(mpf_class& m) {
+    ouoval * v = (ouoval *)malloc(sizeof(ouoval));
+    v->type = OuOVAL_VALUE;
+    mp_exp_t exp;
+    const char * str = m.get_str(exp, 10).c_str();
+    size_t without_dot = strlen(str);
+    if (exp == without_dot) {
+        v->value = (char *)malloc(sizeof(char) * without_dot);
+        strcpy(v->value, str);
+    } else {
+        if (exp >= 0) {
+            if (without_dot > 0) {
+                v->value = (char *)malloc(sizeof(char) * without_dot + (labs(exp) - without_dot) + 1);
+                memcpy(v->value, str, (labs(exp) - without_dot));
+                size_t p;
+                for (p = without_dot; p < labs(exp); p++) {
+                    v->value[p] = '0';
+                }
+                v->value[p] = '\0';
+            }
+        } else {
+            v->value = (char *)malloc(sizeof(char) * without_dot + labs(exp) + 3);
+            long pos = 2;
+            for (pos = 2; pos < labs(exp) + 2; pos++) {
+                v->value[pos] = '0';
+            }
+            memcpy((void *)((long)(char *)v->value + pos), str, without_dot);
+            v->value[0] = '0';
+            v->value[1] = '.';
+            v->value[without_dot + labs(exp) + 2] = '\0';
+        }
+    }
     return v;
 }
 
