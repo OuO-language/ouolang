@@ -94,5 +94,4 @@ ouoval * builtin_mul(ouoenv * e, ouoval * a);
 
 ouoval * builtin_div(ouoenv * e, ouoval * a);
 
-
 #endif /* OUOBUILTIN_H */

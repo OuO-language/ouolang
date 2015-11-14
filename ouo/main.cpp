@@ -70,7 +70,7 @@ void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "/", builtin_div);
 }
 
-int main(int argc, const char * argv[]) {
+int main(int argc, const char * argv[]) {    
     number = mpc_new("number");
     symbol = mpc_new("symbol");
     strings = mpc_new("string");
@@ -83,7 +83,7 @@ int main(int argc, const char * argv[]) {
     mpca_lang(MPCA_LANG_DEFAULT,
               "                                                            \
               number     : /-?[0-9]+\\.?[0-9]*/ ;                          \
-              symbol     : /[a-zA-Z0-9_+\\-*\\/\\\\=<>!&]+/ ;              \
+              symbol     : /[a-zA-Z0-9_+\\-*\\/\\\\=<>!&^]+/ ;              \
               string     : /\"(\\\\.|[^\"])*\"/ ;                          \
               comment    : /;[^\\r\\n]*/ ;                                 \
               sexpr      : '(' <expression>* ')' ;                         \
@@ -113,7 +113,7 @@ int main(int argc, const char * argv[]) {
             ouoval_del(x);
         }
     } else {
-        fprintf(stderr, "OuOlang v0.0.1\nBuilt at %s compiled with gcc version %s\n", __DATE__, __VERSION__);
+        fprintf(stderr, "OuOlang v0.0.1\nBuilt at %s %s compiled with gcc version %s\n", __DATE__, __TIME__, __VERSION__);
         while (1) {
             char* input = readline(ouo_prompt);
             mpc_result_t r;
