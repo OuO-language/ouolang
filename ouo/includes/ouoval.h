@@ -26,10 +26,11 @@ typedef struct ouoval {
     /* Basic
      * Error and Symbol types have some string data
      */
-    long num;
+    double num;
     char * err;
     char * sym;
     char * str;
+    char * value;
     
     /* Function */
     ouobuiltin builtin;
@@ -47,7 +48,7 @@ typedef struct ouoval {
 /**
  Create Enumeration of Possible ouoval Types
  */
-enum { OuOVAL_ERR, OuOVAL_NUM, OuOVAL_SYM, OuOVAL_STR, OuOVAL_SEXPR, OuOVAL_QEXPR, OuOVAL_FUNC };
+enum { OuOVAL_ERR, OuOVAL_NUM, OuOVAL_VALUE, OuOVAL_SYM, OuOVAL_STR, OuOVAL_SEXPR, OuOVAL_QEXPR, OuOVAL_FUNC };
 
 /**
  Create Enumeration of Possible Error Types
@@ -72,7 +73,25 @@ ouoval * ouoval_err(const char* fmt, ...);
  *
  *  @return ouoval
  */
-ouoval * ouoval_num(long x);
+ouoval * ouoval_num(double x);
+
+/**
+ *  @brief  Create a new value type ouoval
+ *
+ *  @param m mpf_class number
+ *
+ *  @return ouoval
+ */
+//ouoval * ouoval_value(mpf_class& m);
+
+/**
+ *  @brief  Create a new value type ouoval
+ *
+ *  @param x string type number
+ *
+ *  @return ouoval
+ */
+//ouoval * ouoval_value(const char * x);
 
 /**
  *  @brief  Construct a pointer to a new Symbol ouoval

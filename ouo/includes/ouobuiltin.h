@@ -17,10 +17,27 @@
  */
 struct ouoval;
 struct ouoenv;
-
 typedef ouoval * (*ouobuiltin)(ouoenv *, ouoval *);
 
+/**
+ *  @brief  <#Description#>
+ *
+ *  @param e    <#e description#>
+ *  @param a    <#a description#>
+ *  @param func <#func description#>
+ *
+ *  @return <#return value description#>
+ */
 ouoval * builtin_var(ouoenv * e, ouoval * a, const char * func);
+
+/**
+ *  @brief  Load a file
+ *
+ *  @param e env
+ *  @param a An Sexpr with file path
+ *
+ *  @return Result of evaluation
+ */
 
 ouoval * builtin_load(ouoenv * e, ouoval * a);
 
@@ -87,6 +104,7 @@ ouoval * builtin_power(ouoenv * e, ouoval * a);
 
 ouoval * builtin_mod(ouoenv * e, ouoval * a);
 
+ouoval * builtin_in(ouoenv * e, ouoval * a);
 
 
 #endif /* OUOBUILTIN_H */

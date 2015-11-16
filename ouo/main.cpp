@@ -14,6 +14,7 @@
 #include "ouoval.h"
 #include "ouoenv.h"
 #include "ouobuiltin.h"
+#include "ouoString.hpp"
 
 using namespace std;
 
@@ -75,6 +76,12 @@ void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "/", builtin_div);
     ouoenv_add_builtin(e, "^", builtin_power);
     ouoenv_add_builtin(e, "%", builtin_mod);
+    ouoenv_add_builtin(e, "in", builtin_in);
+    
+    /* ouoString */
+    ouoenv_add_builtin(e, "len", len);
+    ouoenv_add_builtin(e, "cmp", cmp);
+    ouoenv_add_builtin(e, "strn", strn);
 }
 
 int main(int argc, const char * argv[]) {

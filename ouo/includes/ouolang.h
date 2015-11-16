@@ -9,6 +9,8 @@
 #ifndef OUOLANG_H
 #define OUOLANG_H
 
+#include <gmp.h>
+#include <gmpxx.h>
 #include "ouoval.h"
 #include "ouoenv.h"
 #include "ouobuiltin.h"

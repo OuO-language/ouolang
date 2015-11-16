@@ -11,6 +11,9 @@
 #include <string.h>
 #include <math.h>
 #include "mpc.h"
+#include <iostream>
+
+using namespace std;
 
 extern mpc_parser_t * ouo;
 
@@ -43,6 +46,56 @@ ouoval * builtin_var(ouoenv * e, ouoval * a, const char * func) {
     
     ouoval_del(a);
     return ouoval_sexpr();
+}
+
+ouoval * builtin_in(ouoenv *e, ouoval * a) {
+    
+    OuOASSERT(a, a->count == 2 || a->count == 3, "Function 'in' passed incorrect number of args. Expected 2 or 3.");
+    OuOASSERT_TYPE("in", a, 0, OuOVAL_NUM);
+    
+    ouoval * q = ouoval_qexpr();
+    
+    ouoval * left = ouoval_pop(a, 0);
+    ouoval * right = ouoval_pop(a, 0);
+    //ouoval * s = NULL;
+    /*if (a->count != 0) {
+        s = ouoval_pop(a, 0);
+    }*/
+    if (left->num < right->num) {
+        for (int i = left->num; i <= right->num; i++) {
+            q = ouoval_add(q, ouoval_num((double)i));
+        }
+    } else {
+        for (int i = left->num; i >= right->num; i--) {
+            q = ouoval_add(q, ouoval_num((double)i));
+        }
+    }
+    
+    /*
+    mpf_class from(x->value);
+    mpf_class to(y->value);
+    
+    long step = 1;
+    if (s) { step = mpf_class(s->value).get_si(); }
+    
+    if (from > to) {
+        if (step > 0) { step = -step; }
+        for (; from > to; from += step) {
+            mpf_class tmp = from;
+            q = ouoval_add(q, ouoval_value(tmp));
+        }
+    } else {
+        if (step < 0) { step = -step; }
+        for (; from < to; from += step) {
+            mpf_class tmp = from;
+            q = ouoval_add(q, ouoval_value(tmp));
+        }
+    }
+    */
+    
+    ouoval_del(a);
+    
+    return q;
 }
 
 ouoval * builtin_load(ouoenv * e, ouoval * a) {
@@ -254,11 +307,31 @@ ouoval * builtin_ord(ouoenv * e, ouoval * a, const char* op) {
 }
 
 ouoval * builtin_op(ouoenv * e, ouoval * a, const char* op) {
-    
     /* Ensure all arguments are numbers */
     for (int i = 0; i < a->count; i++) {
-        OuOASSERT_TYPE(op, a, i, OuOVAL_NUM);
+        int flag = 1;
+        if (a->cell[i]->type == OuOVAL_QEXPR || a->cell[i]->type == OuOVAL_NUM) {
+            //cout<<"Node Value: "<<a->cell[0]->cell[i]->num<<" with type: "<<a->cell[0]->cell[i]->type<<endl;
+            flag = 1;
+        }
+        //OuOASSERT_TYPE(op, a, i, flag);
+        OuOASSERT(a, flag, "Wrong data type.")
     }
+    
+    if (a->cell[0]->type == OuOVAL_QEXPR) {
+        a = a->cell[0];
+        a->type = OuOVAL_NUM;
+    }
+    
+    /*if (a->type == OuOVAL_QEXPR) {
+        ouoval * tmp;
+        for (int i = 0; i < a->count; i++) {
+            
+            ouoval_add(tmp, ouoval_pop(a, 0));
+        }
+        a = ouoval_copy(tmp);
+        a->type = OuOVAL_NUM;
+    }*/
     
     /* Pop the first element */
     ouoval * x = ouoval_pop(a, 0);
@@ -280,7 +353,7 @@ ouoval * builtin_op(ouoenv * e, ouoval * a, const char* op) {
         if (strcmp(op, "-") == 0) { x->num -= y->num; }
         if (strcmp(op, "*") == 0) { x->num *= y->num; }
         if (strcmp(op, "^") == 0) { x->num = pow(x->num,y->num); }
-        if (strcmp(op, "%") == 0) { x->num %= y->num; }
+        //if (strcmp(op, "%") == 0) { x->num %= y->num; }
         if (strcmp(op, "/") == 0) {
             if (y->num == 0) {
                 ouoval_del(x); ouoval_del(y);
@@ -290,6 +363,102 @@ ouoval * builtin_op(ouoenv * e, ouoval * a, const char* op) {
             x->num /= y->num;
         }
         
+        /* Delete element now finished with */
+        ouoval_del(y);
+    }
+    
+    /* Delete input expression and return result */
+    ouoval_del(a);
+    return x;
+}
+
+ouoval * builtin_gmp_op(ouoenv * e, ouoval * a, const char* op) {
+    /* Ensure all arguments are numbers */
+    for (int i = 0; i < a->count; i++) {
+        int flag = 1;
+        if (a->type == OuOVAL_QEXPR || a->type == OuOVAL_NUM) {
+            flag = 1;
+        }
+        //OuOASSERT_TYPE(op, a, i, flag);
+        OuOASSERT(a, flag, "Wrong data type.")
+    }
+    
+    if (a->type == OuOVAL_QEXPR) {
+        ouoval * tmp = ouoval_pop(a, 0);
+        for (int i = 0; i < a->count; i++) {
+            ouoval_add(tmp, ouoval_pop(a, 0));
+        }
+        a = ouoval_copy(tmp);
+        a->type = OuOVAL_NUM;
+    }
+
+    
+    
+    /* Pop the first element */
+    ouoval * x = ouoval_pop(a, 0);
+    
+    /* If no arguments and sub then perform unary negation */
+    if ((strcmp(op, "-") == 0) && a->count == 0) {
+        char * ptr = x->value;
+        x->value = (char *)malloc(sizeof(strlen(x->value) + 2));
+        strcpy((char *)((long)(char *)x->value)+1, ptr);
+        x->value[0] = '-';
+        free(ptr);
+    }
+    
+    /* While there are still elements remaining */
+    while (a->count > 0) {
+        
+        /* Pop the next element */
+        ouoval * y = ouoval_pop(a, 0);
+        
+        /* Perform operation */
+        
+        mpf_class a(x->value);
+        mpf_class b(y->value);
+        
+        if (strcmp(op, "+") == 0) { a += b; }
+        if (strcmp(op, "-") == 0) { a -= b; }
+        if (strcmp(op, "*") == 0) { a *= b; }
+        if (strcmp(op, "/") == 0) {
+            if (b == 0) {
+                ouoval_del(x); ouoval_del(y);
+                x = ouoval_err("Division By Zero.");
+                break;
+            }
+            a /= b;
+        }
+        
+        //        if (strcmp(op, "^") == 0) {
+        //            mpf_t res;
+        //            mpf_init2(res, '\0');
+        //            mpf_pow_ui(res, a.get_mpf_t(), b.get_mpf_t());
+        //        }
+        
+        free(x->value);
+        mp_exp_t exp;
+        const char * str = a.get_str(exp, 10).c_str();
+        size_t without_dot = strlen(str);
+        if (exp == without_dot) {
+            x->value = (char *)malloc(sizeof(char) * without_dot);
+            strcpy(x->value, str);
+        } else {
+            if (exp >= 0) {
+                x->value = (char *)malloc(sizeof(char) * without_dot + abs(exp));
+                memcpy(x->value, str, exp);
+                x->value[exp] = '.';
+                memcpy((void *)((long)(char *)x->value + exp + 1), (const void *)((long)(char *)str + exp), without_dot - exp + 1);
+            } else {
+                x->value = (char *)malloc(sizeof(char) * without_dot + abs(exp) + 1);
+                x->value[0] = '0';
+                x->value[1] = '.';
+                int pos;
+                for (pos = 2; pos < abs(exp) + 2; pos++) {
+                    x->value[pos] = '0';
+                }
+                memcpy((void *)((long)(char *)x->value + pos), str, without_dot);
+            }
+        }
         /* Delete element now finished with */
         ouoval_del(y);
     }

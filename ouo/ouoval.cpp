@@ -11,12 +11,14 @@
 #include <stdarg.h>
 #include <string.h>
 #include <errno.h>
+#include <cmath>
 #include "mpc.h"
 
 const char * ouotype_name(int t) {
     switch(t) {
         case OuOVAL_FUNC: return "Function";
         case OuOVAL_NUM: return "Number";
+        case OuOVAL_VALUE: return "MP Value";
         case OuOVAL_ERR: return "Error";
         case OuOVAL_SYM: return "Symbol";
         case OuOVAL_STR: return "String";
@@ -49,12 +51,27 @@ ouoval * ouoval_err(const char * fmt, ...) {
     return v;
 }
 
-ouoval * ouoval_num(long x) {
+ouoval * ouoval_num(double x) {
     ouoval * v = (ouoval *)malloc(sizeof(ouoval));
     v->type = OuOVAL_NUM;
     v->num = x;
     return v;
 }
+
+/*ouoval * ouoval_value(mpf_class& m) {
+    ouoval * v = (ouoval *)malloc(sizeof(ouoval));
+    v->type = OuOVAL_VALUE;
+    v->value = mpf_class(m);
+    return v;
+}
+
+ouoval * ouoval_value(const char * x) {
+    ouoval * v = (ouoval *)malloc(sizeof(ouoval));
+    v->type = OuOVAL_VALUE;
+    v->value = (char *)malloc(strlen(x) + 1);
+    strcpy(v->value, x);
+    return v;
+}*/
 
 ouoval * ouoval_sym(const char* s) {
     ouoval * v = (ouoval *)malloc(sizeof(ouoval));
@@ -117,9 +134,10 @@ ouoval * ouoval_read(mpc_ast_t* t) {
 
 ouoval * ouoval_read_num(mpc_ast_t* t) {
     errno = 0;
-    long x = strtol(t->contents, NULL, 10);
-    return errno != ERANGE ?
-    ouoval_num(x) : ouoval_err("invalid number");
+    //return ouoval_value(t->contents);
+        double x = strtod(t->contents, NULL);
+        return errno != ERANGE ?
+        ouoval_num(x) : ouoval_err("invalid number");
 }
 
 ouoval * ouoval_read_str(mpc_ast_t* t) {
@@ -170,7 +188,11 @@ void ouoval_print(ouoval * v) {
     switch (v->type) {
             /* In the case the type is a number print it */
             /* Then 'break' out of the switch. */
-        case OuOVAL_NUM: printf("%li", v->num); break;
+        case OuOVAL_NUM: printf("%g", v->num); break;
+        case OuOVAL_VALUE: {
+            printf("%s", v->value);
+            break;
+        }
         case OuOVAL_FUNC:
             if (v->builtin) {
                 printf("<function>");
@@ -186,7 +208,7 @@ void ouoval_print(ouoval * v) {
             printf("Error: %s", v->err); break;
         case OuOVAL_SYM:   printf("%s", v->sym); break;
         case OuOVAL_STR:   ouoval_print_str(v); break;
-        case OuOVAL_SEXPR: ouoval_expr_print(v, '[', ']'); break;
+        case OuOVAL_SEXPR: ouoval_expr_print(v, '(', ')'); break;
         case OuOVAL_QEXPR: ouoval_expr_print(v, '{', '}'); break;
     }
 }
@@ -301,6 +323,9 @@ ouoval * ouoval_copy(ouoval* v) {
         case OuOVAL_STR:
             x->str = (char *)malloc(strlen(v->str) + 1);
             strcpy(x->str, v->str); break;
+        case OuOVAL_VALUE:
+            x->value = (char *)malloc(strlen(v->value) + 1);
+            strcpy(x->value, v->value); break;
             
             /* Copy Lists by copying each sub-expression */
         case OuOVAL_SEXPR:
@@ -455,6 +480,7 @@ void ouoval_del(ouoval * v) {
         case OuOVAL_ERR: free(v->err); break;
         case OuOVAL_SYM: free(v->sym); break;
         case OuOVAL_STR: free(v->str); break;
+        case OuOVAL_VALUE: free(v->value); break;
             
             /* If Sexpr|Qexpr then delete all elements inside */
         case OuOVAL_QEXPR:
@@ -485,6 +511,16 @@ int ouoval_eq(ouoval * x, ouoval * y) {
         case OuOVAL_ERR: return (strcmp(x->err, y->err) == 0);
         case OuOVAL_SYM: return (strcmp(x->sym, y->sym) == 0);
         case OuOVAL_STR: return (strcmp(x->str, y->str) == 0);
+            
+            /* Compare GMP Values */
+        case OuOVAL_VALUE: {
+            mpz_t xv, yv;
+            mpz_init_set_str(xv, x->value, 10);
+            mpz_init_set_str(yv, y->value, 10);
+            int result = mpz_cmp(xv, yv);
+            mpz_clears(xv, yv);
+            return result;
+        }
             
             /* If builtin compare, otherwise compare formals and body */
         case OuOVAL_FUNC:
