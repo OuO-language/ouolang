@@ -14,7 +14,6 @@
 #include <cmath>
 #include "mpc.h"
 
-
 const char * ouotype_name(int t) {
     switch(t) {
         case OuOVAL_FUNC: return "Function";

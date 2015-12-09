@@ -35,6 +35,48 @@ ouoval * builtin_exit(ouoenv *e, ouoval * a) {
     return NULL;
 }
 
+ouoval * builtin_in(ouoenv *e, ouoval * a) {
+    if (a->count != 2 && a->count != 3) {
+        ouoval* err = ouoval_err("Function 'in' passed incorrect number of args. Expected 2 or 3.");
+        ouoval_del(a);
+        return err;
+    }
+    OuOASSERT_TYPE("in", a, 0, OuOVAL_VALUE);
+    
+    ouoval * q = ouoval_qexpr();
+    
+    ouoval * x = ouoval_pop(a, 0);
+    ouoval * y = ouoval_pop(a, 0);
+    ouoval * s = NULL;
+    if (a->count != 0) {
+        s = ouoval_pop(a, 0);
+    }
+    mpf_class f(x->value);
+    mpf_class t(y->value);
+    
+    long from = f.get_si();
+    long to = t.get_si();
+    long step = 1;
+    if (s) { step = mpf_class(s->value).get_si(); }
+    
+    if (from > to) {
+        if (step > 0) { step = -step; }
+        for (; from > to; from += step) {
+            mpf_class tmp = from;
+            q = ouoval_add(q, ouoval_value(tmp));
+        }
+    } else {
+        if (step < 0) { step = -step; }
+        for (; from < to; from += step) {
+            mpf_class tmp = from;
+            q = ouoval_add(q, ouoval_value(tmp));
+        }
+    }
+    ouoval_del(a);
+    
+    return q;
+}
+
 void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "exit", builtin_exit);
     
@@ -84,7 +126,7 @@ void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "strn", strn);
 }
 
-int main(int argc, const char * argv[]) {    
+int main(int argc, const char * argv[]) {
     number = mpc_new("number");
     symbol = mpc_new("symbol");
     strings = mpc_new("string");
