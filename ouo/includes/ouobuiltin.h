@@ -40,7 +40,6 @@ ouoval * builtin_var(ouoenv * e, ouoval * a, const char * func);
  */
 ouoval * builtin_load(ouoenv * e, ouoval * a);
 
-
 ouoval * builtin_error(ouoenv * e, ouoval * a);
 
 ouoval * builtin_print(ouoenv * e, ouoval * a);
@@ -52,6 +51,12 @@ ouoval * builtin_lambda(ouoenv * e, ouoval * a);
 ouoval * builtin_def(ouoenv * e, ouoval * a);
 
 ouoval * builtin_put(ouoenv * e, ouoval * a);
+
+ouoval * builtin_con(ouoenv *e, ouoval * a);
+
+/* new
+ */
+//ouoval * builtin_new(ouoenv *e, ouoval * a);
 
 ouoval * builtin_if(ouoenv * e, ouoval* a);
 
@@ -93,5 +98,11 @@ ouoval * builtin_sub(ouoenv * e, ouoval * a);
 ouoval * builtin_mul(ouoenv * e, ouoval * a);
 
 ouoval * builtin_div(ouoenv * e, ouoval * a);
+
+ouoval * builtin_power(ouoenv * e, ouoval * a);
+
+ouoval * builtin_mod(ouoenv * e, ouoval * a);
+
+ouoval * builtin_in(ouoenv * e, ouoval * a);
 
 #endif /* OUOBUILTIN_H */

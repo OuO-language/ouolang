@@ -14,10 +14,11 @@
 #include "ouoval.h"
 #include "ouoenv.h"
 #include "ouobuiltin.h"
+#include "ouoString.h"
 
 using namespace std;
 
-#define ouo_prompt "OuO> "
+#define __OUOPROMPT__ "OuO> "
 
 mpc_parser_t * number;
 mpc_parser_t * symbol;
@@ -42,11 +43,15 @@ void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "error", builtin_error);
     ouoenv_add_builtin(e, "print", builtin_print);
     ouoenv_add_builtin(e, "println", builtin_println);
+    ouoenv_add_builtin(e, "con", builtin_con);
     
     /* Variable Functions */
     ouoenv_add_builtin(e, "\\", builtin_lambda);
     ouoenv_add_builtin(e, "def", builtin_def);
     ouoenv_add_builtin(e, "=",   builtin_put);
+    /* new variable functions
+     */
+    //ouoenv_add_builtin(e, "new", builtin_new);
     
     ouoenv_add_builtin(e, "if", builtin_if);
     ouoenv_add_builtin(e, "==", builtin_eq);
@@ -63,11 +68,20 @@ void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "eval", builtin_eval);
     ouoenv_add_builtin(e, "join", builtin_join);
     
+    
     /* Mathematical Functions */
     ouoenv_add_builtin(e, "+", builtin_add);
     ouoenv_add_builtin(e, "-", builtin_sub);
     ouoenv_add_builtin(e, "*", builtin_mul);
     ouoenv_add_builtin(e, "/", builtin_div);
+    ouoenv_add_builtin(e, "^", builtin_power);
+    ouoenv_add_builtin(e, "%", builtin_mod);
+    ouoenv_add_builtin(e, "in", builtin_in);
+    
+    /* ouoString */
+    ouoenv_add_builtin(e, "len", len);
+    ouoenv_add_builtin(e, "cmp", cmp);
+    ouoenv_add_builtin(e, "strn", strn);
 }
 
 int main(int argc, const char * argv[]) {    
@@ -83,10 +97,10 @@ int main(int argc, const char * argv[]) {
     mpca_lang(MPCA_LANG_DEFAULT,
               "                                                            \
               number     : /-?[0-9]+\\.?[0-9]*/ ;                          \
-              symbol     : /[a-zA-Z0-9_+\\-*\\/\\\\=<>!&^]+/ ;              \
+              symbol     : /[a-zA-Z0-9_+\\-*\\/\\\\=<>!&%^]+/ ;            \
               string     : /\"(\\\\.|[^\"])*\"/ ;                          \
               comment    : /;[^\\r\\n]*/ ;                                 \
-              sexpr      : '(' <expression>* ')' ;                         \
+              sexpr      : '[' <expression>* ']' ;                         \
               qexpr      : '{' <expression>* '}' ;                         \
               expression : <number> | <symbol> | <string>                  \
                          | <comment> | <sexpr> | <qexpr> ;                 \
@@ -113,9 +127,9 @@ int main(int argc, const char * argv[]) {
             ouoval_del(x);
         }
     } else {
-        fprintf(stderr, "OuOlang v0.0.1\nBuilt at %s %s compiled with gcc version %s\n", __DATE__, __TIME__, __VERSION__);
+        fprintf(stderr, "OuO Programming Language v0.0.1\nBuilt at %s compiled with gcc version %s\n", __DATE__, __VERSION__);
         while (1) {
-            char* input = readline(ouo_prompt);
+            char * input = readline(__OUOPROMPT__);
             mpc_result_t r;
             if (mpc_parse("<stdin>", input, ouo, &r)) {
                 /* On Success Print the AST */

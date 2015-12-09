@@ -11,6 +11,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <errno.h>
+#include <cmath>
 #include "mpc.h"
 
 
@@ -55,14 +56,6 @@ ouoval * ouoval_num(double x) {
     ouoval * v = (ouoval *)malloc(sizeof(ouoval));
     v->type = OuOVAL_NUM;
     v->num = x;
-    return v;
-}
-
-ouoval * ouoval_value(const char * x) {
-    ouoval * v = (ouoval *)malloc(sizeof(ouoval));
-    v->type = OuOVAL_VALUE;
-    v->value = (char *)malloc(strlen(x) + 1);
-    strcpy(v->value, x);
     return v;
 }
 
@@ -113,8 +106,8 @@ ouoval * ouoval_read(mpc_ast_t* t) {
     
     /* Fill this list with any valid expression contained within */
     for (int i = 0; i < t->children_num; i++) {
-        if (strcmp(t->children[i]->contents, "(") == 0) { continue; }
-        if (strcmp(t->children[i]->contents, ")") == 0) { continue; }
+        if (strcmp(t->children[i]->contents, "[") == 0) { continue; }
+        if (strcmp(t->children[i]->contents, "]") == 0) { continue; }
         if (strcmp(t->children[i]->contents, "}") == 0) { continue; }
         if (strcmp(t->children[i]->contents, "{") == 0) { continue; }
         if (strcmp(t->children[i]->tag,  "regex") == 0) { continue; }
@@ -127,10 +120,9 @@ ouoval * ouoval_read(mpc_ast_t* t) {
 
 ouoval * ouoval_read_num(mpc_ast_t* t) {
     errno = 0;
-    return ouoval_value(t->contents);
-//    double x = strtod(t->contents, NULL);
-//    return errno != ERANGE ?
-//    ouoval_num(x) : ouoval_err("invalid number");
+    double x = strtod(t->contents, NULL);
+    return errno != ERANGE ?
+    ouoval_num(x) : ouoval_err("invalid number");
 }
 
 ouoval * ouoval_read_str(mpc_ast_t* t) {
@@ -190,8 +182,8 @@ void ouoval_print(ouoval * v) {
             if (v->builtin) {
                 printf("<function>");
             } else {
-                printf("(\\ "); ouoval_print(v->formals);
-                putchar(' '); ouoval_print(v->body); putchar(')');
+                printf("[\\ "); ouoval_print(v->formals);
+                putchar(' '); ouoval_print(v->body); putchar(']');
             }
             break;
             
@@ -201,7 +193,7 @@ void ouoval_print(ouoval * v) {
             printf("Error: %s", v->err); break;
         case OuOVAL_SYM:   printf("%s", v->sym); break;
         case OuOVAL_STR:   ouoval_print_str(v); break;
-        case OuOVAL_SEXPR: ouoval_expr_print(v, '(', ')'); break;
+        case OuOVAL_SEXPR: ouoval_expr_print(v, '[', ']'); break;
         case OuOVAL_QEXPR: ouoval_expr_print(v, '{', '}'); break;
     }
 }

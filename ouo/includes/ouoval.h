@@ -76,15 +76,6 @@ ouoval * ouoval_err(const char* fmt, ...);
 ouoval * ouoval_num(double x);
 
 /**
- *  @brief  Create a new mpf_t type ouoval
- *
- *  @param x string type number
- *
- *  @return ouoval
- */
-ouoval * ouoval_value(const char * x);
-
-/**
  *  @brief  Construct a pointer to a new Symbol ouoval
  *
  *  @param s symbol
