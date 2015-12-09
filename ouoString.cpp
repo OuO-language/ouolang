@@ -3,15 +3,11 @@
 //  ouo
 //
 //  Created by Meirtz on 15/11/16.
-//  Copyright © 2015年 0xBBC. All rights reserved.
+//  Copyright © 2015年 OuOlang. All rights reserved.
 //
 
-#include "ouoString.hpp"
-#include <string.h>
-#include <stdio.h>
 #include "ouoval.h"
-
-using namespace ouoString;
+#include "ouoString.h"
 
 ouoval * len (ouoenv * e, ouoval * a) {
     OuOASSERT(a, a->count == 1, "Too many arguments have passed when I just need ONE!");
