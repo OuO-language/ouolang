@@ -362,7 +362,90 @@ ouoval * builtin_op(ouoenv * e, ouoval * a, const char* op) {
             }
             x->num /= y->num;
         }
+        if (strcmp(op, "^") == 0) {
+            x->num = pow(x->num, y->num);
+        }
         
+        /* Delete element now finished with */
+        ouoval_del(y);
+    }
+    
+    /* Delete input expression and return result */
+    ouoval_del(a);
+    return x;
+}
+
+ouoval * builtin_gmp_op(ouoenv * e, ouoval * a, const char* op) {
+    /* Ensure all arguments are numbers */
+    for (int i = 0; i < a->count; i++) {
+        OuOASSERT_TYPE(op, a, i, OuOVAL_VALUE);
+    }
+    
+    /* Pop the first element */
+    ouoval * x = ouoval_pop(a, 0);
+    
+    /* If no arguments and sub then perform unary negation */
+    if ((strcmp(op, "-") == 0) && a->count == 0) {
+        char * ptr = x->value;
+        x->value = (char *)malloc(sizeof(strlen(x->value) + 2));
+        strcpy((char *)((long)(char *)x->value)+1, ptr);
+        x->value[0] = '-';
+        free(ptr);
+    }
+    
+    /* While there are still elements remaining */
+    while (a->count > 0) {
+        
+        /* Pop the next element */
+        ouoval * y = ouoval_pop(a, 0);
+        
+        /* Perform operation */
+        
+        mpf_class a(x->value);
+        mpf_class b(y->value);
+        
+        if (strcmp(op, "+") == 0) { a += b; }
+        if (strcmp(op, "-") == 0) { a -= b; }
+        if (strcmp(op, "*") == 0) { a *= b; }
+        if (strcmp(op, "/") == 0) {
+            if (b == 0) {
+                ouoval_del(x); ouoval_del(y);
+                x = ouoval_err("Division By Zero.");
+                break;
+            }
+            a /= b;
+        }
+        
+//        if (strcmp(op, "^") == 0) {
+//            mpf_t res;
+//            mpf_init2(res, '\0');
+//            mpf_pow_ui(res, a.get_mpf_t(), b.get_mpf_t());
+//        }
+        
+        free(x->value);
+        mp_exp_t exp;
+        const char * str = a.get_str(exp, 10).c_str();
+        size_t without_dot = strlen(str);
+        if (exp == without_dot) {
+            x->value = (char *)malloc(sizeof(char) * without_dot);
+            strcpy(x->value, str);
+        } else {
+            if (exp >= 0) {
+                x->value = (char *)malloc(sizeof(char) * without_dot + abs(exp));
+                memcpy(x->value, str, exp);
+                x->value[exp] = '.';
+                memcpy((void *)((long)(char *)x->value + exp + 1), (const void *)((long)(char *)str + exp), without_dot - exp + 1);
+            } else {
+                x->value = (char *)malloc(sizeof(char) * without_dot + abs(exp) + 1);
+                x->value[0] = '0';
+                x->value[1] = '.';
+                int pos;
+                for (pos = 2; pos < abs(exp) + 2; pos++) {
+                    x->value[pos] = '0';
+                }
+                memcpy((void *)((long)(char *)x->value + pos), str, without_dot);
+            }
+        }
         /* Delete element now finished with */
         ouoval_del(y);
     }
@@ -533,19 +616,19 @@ ouoval * builtin_join(ouoenv *e, ouoval * a) {
 }
 
 ouoval * builtin_add(ouoenv * e, ouoval * a) {
-    return builtin_op(e, a, "+");
+    return builtin_gmp_op(e, a, "+");
 }
 
 ouoval * builtin_sub(ouoenv * e, ouoval * a) {
-    return builtin_op(e, a, "-");
+    return builtin_gmp_op(e, a, "-");
 }
 
 ouoval * builtin_mul(ouoenv * e, ouoval * a) {
-    return builtin_op(e, a, "*");
+    return builtin_gmp_op(e, a, "*");
 }
 
 ouoval * builtin_div(ouoenv * e, ouoval * a) {
-    return builtin_op(e, a, "/");
+    return builtin_gmp_op(e, a, "/");
 }
 
 ouoval * builtin_power(ouoenv * e, ouoval * a) {

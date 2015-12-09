@@ -84,8 +84,8 @@ void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "strn", strn);
 }
 
-int main(int argc, const char * argv[]) {
-    number   = mpc_new("number");
+int main(int argc, const char * argv[]) {    
+    number = mpc_new("number");
     symbol = mpc_new("symbol");
     strings = mpc_new("string");
     comment = mpc_new("comment");
