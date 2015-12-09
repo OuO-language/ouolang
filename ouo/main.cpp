@@ -14,11 +14,11 @@
 #include "ouoval.h"
 #include "ouoenv.h"
 #include "ouobuiltin.h"
-#include "ouoString.hpp"
+#include "ouoString.h"
 
 using namespace std;
 
-#define ouo_prompt "OuO> "
+#define __OUOPROMPT__ "OuO> "
 
 mpc_parser_t * number;
 mpc_parser_t * symbol;
@@ -129,7 +129,7 @@ int main(int argc, const char * argv[]) {
     } else {
         fprintf(stderr, "OuO Programming Language v0.0.1\nBuilt at %s compiled with gcc version %s\n", __DATE__, __VERSION__);
         while (1) {
-            char* input = readline(ouo_prompt);
+            char * input = readline(__OUOPROMPT__);
             mpc_result_t r;
             if (mpc_parse("<stdin>", input, ouo, &r)) {
                 /* On Success Print the AST */
