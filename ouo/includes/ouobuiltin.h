@@ -38,7 +38,6 @@ ouoval * builtin_var(ouoenv * e, ouoval * a, const char * func);
  *
  *  @return Result of evaluation
  */
-
 ouoval * builtin_load(ouoenv * e, ouoval * a);
 
 ouoval * builtin_error(ouoenv * e, ouoval * a);
@@ -105,6 +104,5 @@ ouoval * builtin_power(ouoenv * e, ouoval * a);
 ouoval * builtin_mod(ouoenv * e, ouoval * a);
 
 ouoval * builtin_in(ouoenv * e, ouoval * a);
-
 
 #endif /* OUOBUILTIN_H */
