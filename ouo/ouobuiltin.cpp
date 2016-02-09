@@ -353,7 +353,7 @@ ouoval * builtin_op(ouoenv * e, ouoval * a, const char* op) {
         if (strcmp(op, "-") == 0) { x->num -= y->num; }
         if (strcmp(op, "*") == 0) { x->num *= y->num; }
         if (strcmp(op, "^") == 0) { x->num = pow(x->num,y->num); }
-        //if (strcmp(op, "%") == 0) { x->num %= y->num; }
+        if (strcmp(op, "%") == 0) { x->num = fmod(x->num, y->num); }
         if (strcmp(op, "/") == 0) {
             if (y->num == 0) {
                 ouoval_del(x); ouoval_del(y);
@@ -418,9 +418,9 @@ ouoval * builtin_gmp_op(ouoenv * e, ouoval * a, const char* op) {
         mpf_class b(y->value);
         
         if (strcmp(op, "+") == 0) { a += b; }
-        if (strcmp(op, "-") == 0) { a -= b; }
-        if (strcmp(op, "*") == 0) { a *= b; }
-        if (strcmp(op, "/") == 0) {
+        else if (strcmp(op, "-") == 0) { a -= b; }
+        else if (strcmp(op, "*") == 0) { a *= b; }
+        else if (strcmp(op, "/") == 0) {
             if (b == 0) {
                 ouoval_del(x); ouoval_del(y);
                 x = ouoval_err("Division By Zero.");
@@ -428,7 +428,6 @@ ouoval * builtin_gmp_op(ouoenv * e, ouoval * a, const char* op) {
             }
             a /= b;
         }
-        
         //        if (strcmp(op, "^") == 0) {
         //            mpf_t res;
         //            mpf_init2(res, '\0');

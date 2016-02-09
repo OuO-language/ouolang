@@ -14,9 +14,9 @@
 #include "ouoval.h"
 #include "ouoenv.h"
 #include "ouobuiltin.h"
-#include "ouoString.hpp"
+#include "ouoString.h"
 
-using namespace std;
+//using namespace std;
 
 #define ouo_prompt "OuO> "
 
@@ -82,6 +82,8 @@ void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "len", len);
     ouoenv_add_builtin(e, "cmp", cmp);
     ouoenv_add_builtin(e, "strn", strn);
+    ouoenv_add_builtin(e, "hash", hash);
+    
 }
 
 int main(int argc, const char * argv[]) {

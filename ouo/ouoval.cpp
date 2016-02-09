@@ -208,7 +208,7 @@ void ouoval_print(ouoval * v) {
             printf("Error: %s", v->err); break;
         case OuOVAL_SYM:   printf("%s", v->sym); break;
         case OuOVAL_STR:   ouoval_print_str(v); break;
-        case OuOVAL_SEXPR: ouoval_expr_print(v, '(', ')'); break;
+        case OuOVAL_SEXPR: ouoval_expr_print(v, '[', ']'); break;
         case OuOVAL_QEXPR: ouoval_expr_print(v, '{', '}'); break;
     }
 }
