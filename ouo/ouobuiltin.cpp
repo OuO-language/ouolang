@@ -184,9 +184,15 @@ ouoval * builtin_con(ouoenv * e, ouoval * a) {
     
     int i = 0;
     
-    char *con_str_ptr = (char *)malloc(200); // Max length of the sum of string is 200
+    size_t size = 1;
+    char * con_str_ptr = (char *)malloc(size); // Max length of the sum of string is 200
     con_str_ptr[0] = '\0';
     for (i = 0; i < a->count; i++) {
+        size += strlen(con_str_ptr);
+        con_str_ptr = (char *)realloc(con_str_ptr, size);
+        if (con_str_ptr == NULL) {
+            return ouoval_err("Oops, out of memory");
+        }
         strcpy(con_str_ptr + strlen(con_str_ptr), a->cell[i]->str);
     }
     ouoval *con_str = ouoval_str(con_str_ptr);
@@ -557,14 +563,18 @@ ouoval * builtin_mod(ouoenv * e, ouoval * a) {
 
 ouoval * builtin_getcwd(ouoenv * e, ouoval * a) {
     char * path = getcwd(NULL, 0);
-    ouoval * cwd = ouoval_str(path);
-    free(path);
-    return cwd;
+    if (path) {
+        ouoval * cwd = ouoval_str(path);
+        return cwd;
+    }
+    return ouoval_err("Cannot get current working directory");
 }
 
 ouoval * builtin_import(ouoenv * e, ouoval * a) {
     OuOASSERT(a, a->count >= 0,
               "Function 'import' needs at least one argument!");
+    
+    
     for (int i = 0; i < a->count; i++) {
         OuOASSERT_TYPE("import", a, i, OuOVAL_STR);
         
@@ -574,7 +584,7 @@ ouoval * builtin_import(ouoenv * e, ouoval * a) {
         if (x->type != OuOVAL_ERR) { ouoval_del(x); }
         
         // Relative name
-        builtin_print(e, builtin_getcwd(e, a));
+        
     }
     return ouoval_sexpr();
 }
