@@ -59,8 +59,8 @@ ouoval * builtin_in(ouoenv *e, ouoval * a) {
     ouoval * right = ouoval_pop(a, 0);
     //ouoval * s = NULL;
     /*if (a->count != 0) {
-        s = ouoval_pop(a, 0);
-    }*/
+     s = ouoval_pop(a, 0);
+     }*/
     if (left->num < right->num) {
         for (int i = left->num; i <= right->num; i++) {
             q = ouoval_add(q, ouoval_num((double)i));
@@ -72,26 +72,26 @@ ouoval * builtin_in(ouoenv *e, ouoval * a) {
     }
     
     /*
-    mpf_class from(x->value);
-    mpf_class to(y->value);
-    
-    long step = 1;
-    if (s) { step = mpf_class(s->value).get_si(); }
-    
-    if (from > to) {
-        if (step > 0) { step = -step; }
-        for (; from > to; from += step) {
-            mpf_class tmp = from;
-            q = ouoval_add(q, ouoval_value(tmp));
-        }
-    } else {
-        if (step < 0) { step = -step; }
-        for (; from < to; from += step) {
-            mpf_class tmp = from;
-            q = ouoval_add(q, ouoval_value(tmp));
-        }
-    }
-    */
+     mpf_class from(x->value);
+     mpf_class to(y->value);
+     
+     long step = 1;
+     if (s) { step = mpf_class(s->value).get_si(); }
+     
+     if (from > to) {
+     if (step > 0) { step = -step; }
+     for (; from > to; from += step) {
+     mpf_class tmp = from;
+     q = ouoval_add(q, ouoval_value(tmp));
+     }
+     } else {
+     if (step < 0) { step = -step; }
+     for (; from < to; from += step) {
+     mpf_class tmp = from;
+     q = ouoval_add(q, ouoval_value(tmp));
+     }
+     }
+     */
     
     ouoval_del(a);
     
@@ -184,9 +184,15 @@ ouoval * builtin_con(ouoenv * e, ouoval * a) {
     
     int i = 0;
     
-    char *con_str_ptr = (char *)malloc(200); // Max length of the sum of string is 200
+    size_t size = 1;
+    char * con_str_ptr = (char *)malloc(size); // Max length of the sum of string is 200
     con_str_ptr[0] = '\0';
     for (i = 0; i < a->count; i++) {
+        size += strlen(con_str_ptr);
+        con_str_ptr = (char *)realloc(con_str_ptr, size);
+        if (con_str_ptr == NULL) {
+            return ouoval_err("Oops, out of memory");
+        }
         strcpy(con_str_ptr + strlen(con_str_ptr), a->cell[i]->str);
     }
     ouoval *con_str = ouoval_str(con_str_ptr);
@@ -324,14 +330,14 @@ ouoval * builtin_op(ouoenv * e, ouoval * a, const char* op) {
     }
     
     /*if (a->type == OuOVAL_QEXPR) {
-        ouoval * tmp;
-        for (int i = 0; i < a->count; i++) {
-            
-            ouoval_add(tmp, ouoval_pop(a, 0));
-        }
-        a = ouoval_copy(tmp);
-        a->type = OuOVAL_NUM;
-    }*/
+     ouoval * tmp;
+     for (int i = 0; i < a->count; i++) {
+     
+     ouoval_add(tmp, ouoval_pop(a, 0));
+     }
+     a = ouoval_copy(tmp);
+     a->type = OuOVAL_NUM;
+     }*/
     
     /* Pop the first element */
     ouoval * x = ouoval_pop(a, 0);
@@ -391,7 +397,7 @@ ouoval * builtin_gmp_op(ouoenv * e, ouoval * a, const char* op) {
         a = ouoval_copy(tmp);
         a->type = OuOVAL_NUM;
     }
-
+    
     
     
     /* Pop the first element */
@@ -553,4 +559,51 @@ ouoval * builtin_power(ouoenv * e, ouoval * a) {
 
 ouoval * builtin_mod(ouoenv * e, ouoval * a) {
     return builtin_op(e, a, "%");
+}
+
+ouoval * builtin_getcwd(ouoenv * e, ouoval * a) {
+    char * path = getcwd(NULL, 0);
+    if (path) {
+        ouoval * cwd = ouoval_str(path);
+        return cwd;
+    }
+    return ouoval_err("Cannot get current working directory");
+}
+
+ouoval * builtin_import(ouoenv * e, ouoval * a) {
+    OuOASSERT(a, a->count >= 0,
+              "Function 'import' needs only one argument!");
+    
+    ouoval * cwd = builtin_getcwd(e, NULL);
+    for (int i = 0; i < a->count; i++) {
+        OuOASSERT_TYPE("import", a, i, OuOVAL_STR);
+        
+        // Directly
+        ouoval * args = ouoval_add(ouoval_sexpr(), ouoval_str(a->cell[i]->str));
+        ouoval * x = builtin_load(e, args);
+        if (x->type != OuOVAL_ERR) {
+            ouoval_del(x);
+        }
+        
+        // Relative path
+        char * relative = (char *)malloc(strlen(cwd->str) + strlen(a->cell[i]->str) + 6);
+        memset(relative, 0, strlen(cwd->str) + strlen(a->cell[i]->str) + 6);
+        strcpy(relative, cwd->str);
+        strcpy(relative + strlen(cwd->str), "/");
+        strcpy(relative + strlen(cwd->str) + 1, a->cell[i]->str);
+        strcpy(relative + strlen(cwd->str) + 1 + strlen(a->cell[i]->str), ".ouo");
+        
+        ouoval_del(cwd);
+        
+        args = ouoval_add(ouoval_sexpr(), ouoval_str(relative));
+        free(relative);
+        
+        x = builtin_load(e, args);
+        if (x->type != OuOVAL_ERR) {
+            ouoval_del(x);
+        } else {
+            return ouoval_err("Cannot import library '%s'", a->cell[i]->str);
+        }
+    }
+    return ouoval_sexpr();
 }

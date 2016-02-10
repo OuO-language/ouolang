@@ -197,8 +197,8 @@ void ouoval_print(ouoval * v) {
             if (v->builtin) {
                 printf("<function>");
             } else {
-                printf("(\\ "); ouoval_print(v->formals);
-                putchar(' '); ouoval_print(v->body); putchar(')');
+                printf("[\\ "); ouoval_print(v->formals);
+                putchar(' '); ouoval_print(v->body); putchar(']');
             }
             break;
             
