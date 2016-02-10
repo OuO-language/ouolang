@@ -16,6 +16,7 @@
 ouoval * len (ouoenv * e, ouoval * a);
 ouoval * cmp (ouoenv * e, ouoval * a);
 ouoval * strn (ouoenv * e, ouoval * a);
+ouoval * endswith(ouoenv * e, ouoval * a);
 ouoval * hash (ouoenv * e, ouoval * a);
 
 #endif /* ouoString_hpp */

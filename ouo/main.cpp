@@ -86,6 +86,7 @@ void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "len", len);
     ouoenv_add_builtin(e, "cmp", cmp);
     ouoenv_add_builtin(e, "strn", strn);
+    ouoenv_add_builtin(e, "endswith", endswith);
     ouoenv_add_builtin(e, "hash", hash);
     
 }
