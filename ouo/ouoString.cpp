@@ -3,11 +3,14 @@
 //  ouo
 //
 //  Created by Meirtz on 15/11/16.
-//  Copyright © 2015年 OuOlang. All rights reserved.
+//  Copyright © 2015年 0xBBC. All rights reserved.
 //
 
-#include "ouoval.h"
 #include "ouoString.h"
+#include <string.h>
+#include <stdio.h>
+#include "ouoval.h"
+
 
 ouoval * len (ouoenv * e, ouoval * a) {
     OuOASSERT(a, a->count == 1, "Too many arguments have passed when I just need ONE!");
@@ -21,8 +24,8 @@ ouoval * cmp (ouoenv * e, ouoval * a) {
     return ouoval_num(strcmp(a->cell[0]->str, a->cell[1]->str));
 }
 ouoval * strn (ouoenv * e, ouoval * a) {
-    OuOASSERT(a, a->count, "Tow many or only one argument!");
-    OuOASSERT(a, a->cell[0]->type == OuOVAL_STR /* && the type of value */, "Wrong argument type.");
+    OuOASSERT(a, a->count, "Tow many or only one argument to fuck up!");
+    OuOASSERT(a, a->cell[0]->type == OuOVAL_STR /* && the type of value */, "Wrong argument type You DICKSUCKINGCONDOMSTER!!!");
     
     
     char tmp = a->cell[0]->str[(int)(a->cell[1]->num + a->cell[2]->num)];
@@ -30,4 +33,20 @@ ouoval * strn (ouoenv * e, ouoval * a) {
     ouoval *res = ouoval_str(&a->cell[0]->str[(int)(a->cell[1]->num + a->cell[2]->num)]);
     a->cell[0]->str[(int)(a->cell[1]->num + a->cell[2]->num)] = tmp;
     return ouoval_str(res->str);
+}
+
+ouoval * hash (ouoenv * e, ouoval * a) {
+    uint64_t hash = 0;
+    uint64_t i;
+    
+    for (i = 0; i < strlen(a->cell[0]->str) ; i++) {
+        hash += (uint64_t)a->cell[0]->str[i];
+        hash += (hash << 10);
+        hash ^= (hash >> 6);
+    }
+    hash += (hash << 3);
+    hash ^= (hash >> 11);
+    hash += (hash << 15);
+    printf("Debug:: %lld\n", hash);
+    return ouoval_num(hash);
 }

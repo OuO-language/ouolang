@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		271B93EF1BF9FF69005EAF01 /* libgmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 271B93EE1BF9FF69005EAF01 /* libgmp.a */; };
 		271B93F11BF9FF7E005EAF01 /* libgmpxx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 271B93F01BF9FF7E005EAF01 /* libgmpxx.a */; };
-		FECB376E1C17F32B00E831A9 /* ouoString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FECB376D1C17F32B00E831A9 /* ouoString.cpp */; };
+		27BA28A31C6B5FF0006F93C1 /* ouoString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27BA28A21C6B5FF0006F93C1 /* ouoString.cpp */; };
 		FEF33FA51BF38068004AF7E8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEF33FA41BF38068004AF7E8 /* main.cpp */; };
 		FEF33FAD1BF38917004AF7E8 /* mpc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEF33FAB1BF38917004AF7E8 /* mpc.cpp */; };
 		FEF33FAF1BF39203004AF7E8 /* libedit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FEF33FAE1BF39203004AF7E8 /* libedit.tbd */; };
@@ -33,7 +33,7 @@
 /* Begin PBXFileReference section */
 		271B93EE1BF9FF69005EAF01 /* libgmp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgmp.a; path = ../../../../opt/local/lib/libgmp.a; sourceTree = "<group>"; };
 		271B93F01BF9FF7E005EAF01 /* libgmpxx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgmpxx.a; path = ../../../../opt/local/lib/libgmpxx.a; sourceTree = "<group>"; };
-		FECB376D1C17F32B00E831A9 /* ouoString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ouoString.cpp; sourceTree = "<group>"; };
+		27BA28A21C6B5FF0006F93C1 /* ouoString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ouoString.cpp; sourceTree = "<group>"; };
 		FEF33FA11BF38068004AF7E8 /* ouo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ouo; sourceTree = BUILT_PRODUCTS_DIR; };
 		FEF33FA41BF38068004AF7E8 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		FEF33FAB1BF38917004AF7E8 /* mpc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mpc.cpp; sourceTree = "<group>"; };
@@ -84,8 +84,8 @@
 				FEF33FA41BF38068004AF7E8 /* main.cpp */,
 				FEF992121BF59DA10084BA26 /* ouoval.cpp */,
 				FEF992151BF59E3A0084BA26 /* ouoenv.cpp */,
+				27BA28A21C6B5FF0006F93C1 /* ouoString.cpp */,
 				FEF992181BF59FD00084BA26 /* ouobuiltin.cpp */,
-				FECB376D1C17F32B00E831A9 /* ouoString.cpp */,
 				FEF33FAB1BF38917004AF7E8 /* mpc.cpp */,
 			);
 			path = ouo;
@@ -151,7 +151,7 @@
 				FEF33FAD1BF38917004AF7E8 /* mpc.cpp in Sources */,
 				FEF33FA51BF38068004AF7E8 /* main.cpp in Sources */,
 				FEF992141BF59DA10084BA26 /* ouoval.cpp in Sources */,
-				FECB376E1C17F32B00E831A9 /* ouoString.cpp in Sources */,
+				27BA28A31C6B5FF0006F93C1 /* ouoString.cpp in Sources */,
 				FEF992171BF59E3A0084BA26 /* ouoenv.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -247,7 +247,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/local/lib,
-					/usr/local/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -264,7 +263,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/local/lib,
-					/usr/local/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
