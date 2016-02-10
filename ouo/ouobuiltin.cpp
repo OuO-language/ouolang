@@ -585,7 +585,7 @@ ouoval * builtin_import(ouoenv * e, ouoval * a) {
             ouoval_del(x);
         }
         
-        // Relative name
+        // Relative path
         char * relative = (char *)malloc(strlen(cwd->str) + strlen(a->cell[i]->str) + 6);
         memset(relative, 0, strlen(cwd->str) + strlen(a->cell[i]->str) + 6);
         strcpy(relative, cwd->str);
