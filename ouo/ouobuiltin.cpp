@@ -572,7 +572,7 @@ ouoval * builtin_getcwd(ouoenv * e, ouoval * a) {
 
 ouoval * builtin_import(ouoenv * e, ouoval * a) {
     OuOASSERT(a, a->count >= 0,
-              "Function 'import' needs at least one argument!");
+              "Function 'import' needs only one argument!");
     
     ouoval * cwd = builtin_getcwd(e, NULL);
     for (int i = 0; i < a->count; i++) {
@@ -581,18 +581,29 @@ ouoval * builtin_import(ouoenv * e, ouoval * a) {
         // Directly
         ouoval * args = ouoval_add(ouoval_sexpr(), ouoval_str(a->cell[i]->str));
         ouoval * x = builtin_load(e, args);
-        if (x->type != OuOVAL_ERR) { ouoval_del(x); }
+        if (x->type != OuOVAL_ERR) {
+            ouoval_del(x);
+        }
         
         // Relative name
-        char * relative = (char *)malloc(strlen(cwd->str) + strlen(a->cell[i]->str) + 2);
-        memset(relative, 0, strlen(cwd->str) + strlen(a->cell[i]->str) + 2);
+        char * relative = (char *)malloc(strlen(cwd->str) + strlen(a->cell[i]->str) + 6);
+        memset(relative, 0, strlen(cwd->str) + strlen(a->cell[i]->str) + 6);
         strcpy(relative, cwd->str);
         strcpy(relative + strlen(cwd->str), "/");
         strcpy(relative + strlen(cwd->str) + 1, a->cell[i]->str);
+        strcpy(relative + strlen(cwd->str) + 1 + strlen(a->cell[i]->str), ".ouo");
+        
+        ouoval_del(cwd);
         
         args = ouoval_add(ouoval_sexpr(), ouoval_str(relative));
+        free(relative);
+        
         x = builtin_load(e, args);
-        if (x->type != OuOVAL_ERR) { ouoval_del(x); }
+        if (x->type != OuOVAL_ERR) {
+            ouoval_del(x);
+        } else {
+            return ouoval_err("Cannot import library '%s'", a->cell[i]->str);
+        }
     }
     return ouoval_sexpr();
 }
