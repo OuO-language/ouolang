@@ -1,4 +1,4 @@
-dependencies: /Users/Meirtz/Desktop/ouolang\ 2/ouoString.cpp \
+dependencies: /Users/Meirtz/Desktop/ouolang\ 2/ouo/ouoString.cpp \
   /Users/Meirtz/Desktop/ouolang\ 2/ouo/includes/ouoString.h \
   /Users/Meirtz/Desktop/ouolang\ 2/ouo/includes/ouolang.h \
   /usr/local/include/gmp.h /usr/local/include/gmpxx.h \

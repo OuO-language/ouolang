@@ -3,19 +3,14 @@
 //  ouo
 //
 //  Created by Meirtz on 15/11/16.
-//  Copyright © 2015年 OuOlang. All rights reserved.
+//  Copyright © 2015年 0xBBC. All rights reserved.
 //
 
-<<<<<<< HEAD
 #include "ouoString.h"
 #include <string.h>
 #include <stdio.h>
 #include "ouoval.h"
 
-=======
-#include "ouoval.h"
-#include "ouoString.h"
->>>>>>> origin/Meirtz
 
 ouoval * len (ouoenv * e, ouoval * a) {
     OuOASSERT(a, a->count == 1, "Too many arguments have passed when I just need ONE!");

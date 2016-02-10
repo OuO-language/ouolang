@@ -58,7 +58,22 @@ ouoval * ouoval_num(double x) {
     return v;
 }
 
-ouoval * ouoval_sym(const char * s) {
+/*ouoval * ouoval_value(mpf_class& m) {
+    ouoval * v = (ouoval *)malloc(sizeof(ouoval));
+    v->type = OuOVAL_VALUE;
+    v->value = mpf_class(m);
+    return v;
+}
+
+ouoval * ouoval_value(const char * x) {
+    ouoval * v = (ouoval *)malloc(sizeof(ouoval));
+    v->type = OuOVAL_VALUE;
+    v->value = (char *)malloc(strlen(x) + 1);
+    strcpy(v->value, x);
+    return v;
+}*/
+
+ouoval * ouoval_sym(const char* s) {
     ouoval * v = (ouoval *)malloc(sizeof(ouoval));
     v->type = OuOVAL_SYM;
     v->sym = (char *)malloc(strlen(s) + 1);
@@ -119,9 +134,10 @@ ouoval * ouoval_read(mpc_ast_t* t) {
 
 ouoval * ouoval_read_num(mpc_ast_t* t) {
     errno = 0;
-    double x = strtod(t->contents, NULL);
-    return errno != ERANGE ?
-    ouoval_num(x) : ouoval_err("invalid number");
+    //return ouoval_value(t->contents);
+        double x = strtod(t->contents, NULL);
+        return errno != ERANGE ?
+        ouoval_num(x) : ouoval_err("invalid number");
 }
 
 ouoval * ouoval_read_str(mpc_ast_t* t) {
@@ -181,8 +197,8 @@ void ouoval_print(ouoval * v) {
             if (v->builtin) {
                 printf("<function>");
             } else {
-                printf("[\\ "); ouoval_print(v->formals);
-                putchar(' '); ouoval_print(v->body); putchar(']');
+                printf("(\\ "); ouoval_print(v->formals);
+                putchar(' '); ouoval_print(v->body); putchar(')');
             }
             break;
             

@@ -18,7 +18,7 @@
 
 //using namespace std;
 
-#define __OUOPROMPT__ "OuO> "
+#define ouo_prompt "OuO> "
 
 mpc_parser_t * number;
 mpc_parser_t * symbol;
@@ -33,48 +33,6 @@ ouoval * builtin_exit(ouoenv *e, ouoval * a) {
     printf("（/>///<）/~~~~~~~~~~~~~~~~~~╧═╧ )>口<) \n");
     exit(0);
     return NULL;
-}
-
-ouoval * builtin_in(ouoenv *e, ouoval * a) {
-    if (a->count != 2 && a->count != 3) {
-        ouoval* err = ouoval_err("Function 'in' passed incorrect number of args. Expected 2 or 3.");
-        ouoval_del(a);
-        return err;
-    }
-    OuOASSERT_TYPE("in", a, 0, OuOVAL_VALUE);
-    
-    ouoval * q = ouoval_qexpr();
-    
-    ouoval * x = ouoval_pop(a, 0);
-    ouoval * y = ouoval_pop(a, 0);
-    ouoval * s = NULL;
-    if (a->count != 0) {
-        s = ouoval_pop(a, 0);
-    }
-    mpf_class f(x->value);
-    mpf_class t(y->value);
-    
-    long from = f.get_si();
-    long to = t.get_si();
-    long step = 1;
-    if (s) { step = mpf_class(s->value).get_si(); }
-    
-    if (from > to) {
-        if (step > 0) { step = -step; }
-        for (; from > to; from += step) {
-            mpf_class tmp = from;
-            q = ouoval_add(q, ouoval_value(tmp));
-        }
-    } else {
-        if (step < 0) { step = -step; }
-        for (; from < to; from += step) {
-            mpf_class tmp = from;
-            q = ouoval_add(q, ouoval_value(tmp));
-        }
-    }
-    ouoval_del(a);
-    
-    return q;
 }
 
 void ouoenv_add_builtins(ouoenv * e) {
@@ -129,7 +87,7 @@ void ouoenv_add_builtins(ouoenv * e) {
 }
 
 int main(int argc, const char * argv[]) {
-    number = mpc_new("number");
+    number   = mpc_new("number");
     symbol = mpc_new("symbol");
     strings = mpc_new("string");
     comment = mpc_new("comment");
@@ -173,7 +131,7 @@ int main(int argc, const char * argv[]) {
     } else {
         fprintf(stderr, "OuO Programming Language v0.0.1\nBuilt at %s compiled with gcc version %s\n", __DATE__, __VERSION__);
         while (1) {
-            char * input = readline(__OUOPROMPT__);
+            char* input = readline(ouo_prompt);
             mpc_result_t r;
             if (mpc_parse("<stdin>", input, ouo, &r)) {
                 /* On Success Print the AST */
