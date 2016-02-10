@@ -3,7 +3,7 @@
 //  ouo
 //
 //  Created by Meirtz on 15/11/16.
-//  Copyright © 2015年 0xBBC. All rights reserved.
+//  Copyright © 2015年 OuOlang. All rights reserved.
 //
 
 #ifndef ouoString_hpp

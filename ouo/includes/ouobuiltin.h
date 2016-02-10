@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include "ouolang.h"
+#define MAX_HISTORY_COUNT 233
 
 /**
  *  @brief  Forward Declarations
@@ -105,6 +106,8 @@ ouoval * builtin_power(ouoenv * e, ouoval * a);
 ouoval * builtin_mod(ouoenv * e, ouoval * a);
 
 ouoval * builtin_in(ouoenv * e, ouoval * a);
+
+ouoval * builtin_history(ouoenv * e, ouoval * a);
 
 
 #endif /* OUOBUILTIN_H */
