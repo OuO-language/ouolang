@@ -38,6 +38,10 @@ ouoval * builtin_exit(ouoenv *e, ouoval * a) {
 
 void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "exit", builtin_exit);
+    ouoenv_add_builtin(e, "import", builtin_import);
+    
+    /* stdlib Functions */
+    ouoenv_add_builtin(e, "getcwd", builtin_getcwd);
     
     /* String Functions */
     ouoenv_add_builtin(e, "load",  builtin_load);
@@ -86,6 +90,7 @@ void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "len", len);
     ouoenv_add_builtin(e, "cmp", cmp);
     ouoenv_add_builtin(e, "strn", strn);
+    ouoenv_add_builtin(e, "endswith", endswith);
     ouoenv_add_builtin(e, "hash", hash);
 
 }
@@ -109,7 +114,7 @@ int main(int argc, const char * argv[]) {
               sexpr      : '[' <expression>* ']' ;                         \
               qexpr      : '{' <expression>* '}' ;                         \
               expression : <number> | <symbol> | <string>                  \
-                         | <comment> | <sexpr> | <qexpr> ;                 \
+              | <comment> | <sexpr> | <qexpr> ;                 \
               ouo        : /^/ <expression>* /$/ ;                         \
               ",
               number, symbol, strings, comment, sexpr, qexpr, expression, ouo);
@@ -129,7 +134,7 @@ int main(int argc, const char * argv[]) {
             ouoval * x = builtin_load(e, args);
             
             /* If the result is an error be sure to print it */
-            if (x->type == OuOVAL_ERR) { ouoval_println(x); }
+            if (x->type == OuOVAL_ERR) { ouoval_println(e, x); }
             ouoval_del(x);
         }
     } else {
@@ -168,7 +173,7 @@ int main(int argc, const char * argv[]) {
             if (mpc_parse("<stdin>", input, ouo, &r)) {
                 /* On Success Print the AST */
                 ouoval * x = ouoval_eval(e, ouoval_read((mpc_ast_t *)r.output));
-                ouoval_println(x);
+                ouoval_println(e, x);
                 ouoval_del(x);
                 mpc_ast_delete((mpc_ast_t *)r.output);
             } else {

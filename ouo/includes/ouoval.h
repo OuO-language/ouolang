@@ -163,14 +163,14 @@ ouoval * ouoval_add(ouoval * v, ouoval * x);
  *
  *  @param v an ouoval to print
  */
-void ouoval_print(ouoval * v);
+void ouoval_print(ouoenv * e, ouoval * v);
 
 /**
  *  @brief  Print an "ouoval" followed by a newline
  *
  *  @param v an ouoval to print
  */
-void ouoval_println(ouoval * v);
+void ouoval_println(ouoenv * e, ouoval * v);
 
 /**
  *  @brief  Print a string type "ouoval"
@@ -184,7 +184,7 @@ void ouoval_print_str(ouoval * v);
  *
  *  @param v an ouoval to print
  */
-void ouoval_expr_print(ouoval * v, char open, char close);
+void ouoval_expr_print(ouoenv * e, ouoval * v, char open, char close);
 
 ouoval * ouoval_eval(ouoenv * e, ouoval * v);
 

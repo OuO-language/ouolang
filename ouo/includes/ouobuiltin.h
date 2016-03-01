@@ -109,5 +109,8 @@ ouoval * builtin_in(ouoenv * e, ouoval * a);
 
 ouoval * builtin_history(ouoenv * e, ouoval * a);
 
+ouoval * builtin_getcwd(ouoenv * e, ouoval * a);
+
+ouoval * builtin_import(ouoenv * e, ouoval * a);
 
 #endif /* OUOBUILTIN_H */
