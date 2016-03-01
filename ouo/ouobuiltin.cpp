@@ -16,6 +16,9 @@
 using namespace std;
 
 extern mpc_parser_t * ouo;
+char *hist[MAX_HISTORY_COUNT];
+int current = 0;
+
 
 ouoval * builtin_var(ouoenv * e, ouoval * a, const char * func) {
     OuOASSERT_TYPE(func, a, 0, OuOVAL_QEXPR);
@@ -534,6 +537,61 @@ ouoval * builtin_join(ouoenv *e, ouoval * a) {
     
     ouoval_del(a);
     return x;
+}
+
+ouoval * builtin_history(ouoenv * e, ouoval * a) {
+    OuOASSERT(a, a->count == 1, "Function 'history' doesn't need an argument!")
+    OuOASSERT_TYPE("history", a, 0, OuOVAL_QEXPR);
+    int index = current;
+    int i = current;
+    int hist_num = 1;
+    ouoval * r = ouoval_qexpr();
+    
+    //printf("Debug::Cell[0]::Count::%d\n", a->cell[0]->count);
+    if (a->cell[0]->cell[0]->num == 0) {
+        do {
+            if (hist[i]) {
+                //printf("%4d  %s\n", hist_num, hist[i]);
+                //ouoval * tmp = ouoval_qexpr();
+                ouoval_add(r, ouoval_str(hist[i]));
+                //ouoval_add(r, tmp);
+                hist_num++;
+                
+            }
+            
+            i = (i + 1) % MAX_HISTORY_COUNT;
+            
+        } while (i != current);
+    }else {
+        for (int i = 0; i < a->cell[0]->count; i++) {
+            index = fmod(a->cell[0]->cell[i]->num, MAX_HISTORY_COUNT) - 1;
+            if (hist[index]) {
+                ouoval_add(r, ouoval_str(hist[index]));
+            }
+        }
+    }
+    
+    /*if (a->cell[0]->num == 0) {
+        r = ouoval_qexpr();
+        do {
+            if (hist[i]) {
+                //printf("%4d  %s\n", hist_num, hist[i]);
+                //ouoval * tmp = ouoval_qexpr();
+                ouoval_add(r, ouoval_str(hist[i]));
+                //ouoval_add(r, tmp);
+                hist_num++;
+                
+            }
+            
+            i = (i + 1) % MAX_HISTORY_COUNT;
+            
+        } while (i != current);
+    } else {
+        r = ouoval_str(hist[(int)(fmod(a->cell[0]->num, MAX_HISTORY_COUNT))]);
+    }*/
+    
+
+    return r;
 }
 
 ouoval * builtin_add(ouoenv * e, ouoval * a) {

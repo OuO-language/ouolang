@@ -15,6 +15,7 @@
 #include "ouoenv.h"
 #include "ouobuiltin.h"
 #include "ouoString.h"
+#include <string>
 
 //using namespace std;
 
@@ -82,13 +83,16 @@ void ouoenv_add_builtins(ouoenv * e) {
     ouoenv_add_builtin(e, "%", builtin_mod);
     ouoenv_add_builtin(e, "in", builtin_in);
     
+    /* History */
+    ouoenv_add_builtin(e, "history", builtin_history);
+    
     /* ouoString */
     ouoenv_add_builtin(e, "len", len);
     ouoenv_add_builtin(e, "cmp", cmp);
     ouoenv_add_builtin(e, "strn", strn);
     ouoenv_add_builtin(e, "endswith", endswith);
     ouoenv_add_builtin(e, "hash", hash);
-    
+
 }
 
 int main(int argc, const char * argv[]) {
@@ -135,9 +139,37 @@ int main(int argc, const char * argv[]) {
         }
     } else {
         fprintf(stderr, "OuO Programming Language v0.0.1\nBuilt at %s compiled with gcc version %s\n", __DATE__, __VERSION__);
+        extern char *hist[MAX_HISTORY_COUNT];
+        extern int current;
+        int cursor = current;
+        for (int i = 0; i < MAX_HISTORY_COUNT; i++)
+            hist[i] = NULL;
         while (1) {
+            // To be improved
+            /*printf("OuO> ");
+            char input[233];
+            int i = 0;
+            while (1) {
+                char c;
+                scanf("%c",&c);
+                if (c == '\n') {
+                    break;
+                }
+                else if(c == 72) {
+                    std::cout<<hist[cursor]<<std::flush;
+                    cursor = (cursor - 1) % MAX_HISTORY_COUNT;
+                    break;
+                }
+                input[i] = c;
+                i++;
+            }*/
             char* input = readline(ouo_prompt);
             mpc_result_t r;
+            
+            free(hist[current]);
+            hist[current] = strdup(input);
+            current = (current + 1) % MAX_HISTORY_COUNT;
+            
             if (mpc_parse("<stdin>", input, ouo, &r)) {
                 /* On Success Print the AST */
                 ouoval * x = ouoval_eval(e, ouoval_read((mpc_ast_t *)r.output));

@@ -104,6 +104,6 @@ ouoval * hash (ouoenv * e, ouoval * a) {
     hash += (hash << 3);
     hash ^= (hash >> 11);
     hash += (hash << 15);
-    printf("Debug:: %lld\n", hash);
+    //printf("Debug:: %lld\n", hash);
     return ouoval_num(hash);
 }
