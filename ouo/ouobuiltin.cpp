@@ -114,7 +114,7 @@ ouoval * builtin_load(ouoenv * e, ouoval * a) {
         while (expr->count) {
             ouoval * x = ouoval_eval(e, ouoval_pop(expr, 0));
             /* If Evaluation leads to error print it */
-            if (x->type == OuOVAL_ERR) { ouoval_println(x); }
+            if (x->type == OuOVAL_ERR) { ouoval_println(e, x); }
             ouoval_del(x);
         }
         
@@ -158,10 +158,10 @@ ouoval * builtin_print(ouoenv * e, ouoval * a) {
     /* Print each argument followed by a space */
     int i;
     for (i = 0; i < a->count - 1; i++) {
-        ouoval_print(a->cell[i]);putchar(' ');
+        ouoval_print(e, a->cell[i]);putchar(' ');
     }
     i++;
-    ouoval_print(a->cell[i]);
+    ouoval_print(e, a->cell[i]);
     
     /* Print a newline and delete arguments */
     putchar('\n');
@@ -196,7 +196,6 @@ ouoval * builtin_con(ouoenv * e, ouoval * a) {
         strcpy(con_str_ptr + strlen(con_str_ptr), a->cell[i]->str);
     }
     ouoval *con_str = ouoval_str(con_str_ptr);
-    //ouoval_print(con_str);
     return con_str;
 }
 

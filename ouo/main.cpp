@@ -130,7 +130,7 @@ int main(int argc, const char * argv[]) {
             ouoval * x = builtin_load(e, args);
             
             /* If the result is an error be sure to print it */
-            if (x->type == OuOVAL_ERR) { ouoval_println(x); }
+            if (x->type == OuOVAL_ERR) { ouoval_println(e, x); }
             ouoval_del(x);
         }
     } else {
@@ -141,7 +141,7 @@ int main(int argc, const char * argv[]) {
             if (mpc_parse("<stdin>", input, ouo, &r)) {
                 /* On Success Print the AST */
                 ouoval * x = ouoval_eval(e, ouoval_read((mpc_ast_t *)r.output));
-                ouoval_println(x);
+                ouoval_println(e, x);
                 ouoval_del(x);
                 mpc_ast_delete((mpc_ast_t *)r.output);
             } else {

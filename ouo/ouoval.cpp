@@ -184,7 +184,7 @@ ouoval * ouoval_add(ouoval * v, ouoval * x) {
     return v;
 }
 
-void ouoval_print(ouoval * v) {
+void ouoval_print(ouoenv * e, ouoval * v) {
     switch (v->type) {
             /* In the case the type is a number print it */
             /* Then 'break' out of the switch. */
@@ -197,8 +197,14 @@ void ouoval_print(ouoval * v) {
             if (v->builtin) {
                 printf("<function>");
             } else {
-                printf("[\\ "); ouoval_print(v->formals);
-                putchar(' '); ouoval_print(v->body); putchar(']');
+                if (v->formals->count == 0) {
+                    v->env->par = e;
+                    ouoval * x = builtin_eval(v->env, ouoval_add(ouoval_sexpr(), ouoval_copy(v->body)));
+                    ouoval_print(e, x);
+                } else {
+                    printf("[\\ "); ouoval_print(e, v->formals);
+                    putchar(' '); ouoval_print(e, v->body); putchar(']');
+                }
             }
             break;
             
@@ -208,13 +214,13 @@ void ouoval_print(ouoval * v) {
             printf("Error: %s", v->err); break;
         case OuOVAL_SYM:   printf("%s", v->sym); break;
         case OuOVAL_STR:   ouoval_print_str(v); break;
-        case OuOVAL_SEXPR: ouoval_expr_print(v, '[', ']'); break;
-        case OuOVAL_QEXPR: ouoval_expr_print(v, '{', '}'); break;
+        case OuOVAL_SEXPR: ouoval_expr_print(e, v, '[', ']'); break;
+        case OuOVAL_QEXPR: ouoval_expr_print(e, v, '{', '}'); break;
     }
 }
 
-void ouoval_println(ouoval * v) {
-    ouoval_print(v);
+void ouoval_println(ouoenv * e, ouoval * v) {
+    ouoval_print(e, v);
     putchar('\n');
 }
 
@@ -230,12 +236,12 @@ void ouoval_print_str(ouoval * v) {
     free(escaped);
 }
 
-void ouoval_expr_print(ouoval * v, char open, char close) {
+void ouoval_expr_print(ouoenv * e, ouoval * v, char open, char close) {
     putchar(open);
     for (int i = 0; i < v->count; i++) {
         
         /* Print Value contained within */
-        ouoval_print(v->cell[i]);
+        ouoval_print(e, v->cell[i]);
         
         /* Don't print trailing space if last element */
         if (i != (v->count-1)) {
