@@ -185,7 +185,7 @@ ouoval * builtin_con(ouoenv * e, ouoval * a) {
     int i = 0;
     
     size_t size = 1;
-    char * con_str_ptr = (char *)malloc(size); // Max length of the sum of string is 200
+    char * con_str_ptr = (char *)malloc(size); // automatically calculates the size of string
     con_str_ptr[0] = '\0';
     for (i = 0; i < a->count; i++) {
         size += strlen(con_str_ptr);
