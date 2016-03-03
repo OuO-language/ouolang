@@ -16,6 +16,12 @@
 #include "ouobuiltin.h"
 #include "ouoString.h"
 #include <string>
+#include <sys/select.h>
+#include <termios.h>
+#include <thread>
+#include <functional>
+#include <condition_variable>
+#include "REPL.h"
 
 //using namespace std;
 
@@ -95,6 +101,11 @@ void ouoenv_add_builtins(ouoenv * e) {
 
 }
 
+int kkk(int arg1, int arg2) {
+    printf("arg1 is %d, arg2 is %d\n", arg1, arg2);
+    return 0;
+}
+
 int main(int argc, const char * argv[]) {
     number   = mpc_new("number");
     symbol = mpc_new("symbol");
@@ -114,7 +125,7 @@ int main(int argc, const char * argv[]) {
               sexpr      : '[' <expression>* ']' ;                         \
               qexpr      : '{' <expression>* '}' ;                         \
               expression : <number> | <symbol> | <string>                  \
-              | <comment> | <sexpr> | <qexpr> ;                 \
+              | <comment> | <sexpr> | <qexpr> ;                            \
               ouo        : /^/ <expression>* /$/ ;                         \
               ",
               number, symbol, strings, comment, sexpr, qexpr, expression, ouo);
@@ -137,40 +148,18 @@ int main(int argc, const char * argv[]) {
             if (x->type == OuOVAL_ERR) { ouoval_println(e, x); }
             ouoval_del(x);
         }
+        ouoenv_del(e);
+        mpc_cleanup(8, number, symbol, strings, comment, sexpr, qexpr, expression, ouo);
     } else {
         fprintf(stderr, "OuO Programming Language v0.0.1\nBuilt at %s compiled with gcc version %s\n", __DATE__, __VERSION__);
-        extern char *hist[MAX_HISTORY_COUNT];
-        extern int current;
-        int cursor = current;
-        for (int i = 0; i < MAX_HISTORY_COUNT; i++)
-            hist[i] = NULL;
-        while (1) {
-            // To be improved
-            /*printf("OuO> ");
-            char input[233];
-            int i = 0;
-            while (1) {
-                char c;
-                scanf("%c",&c);
-                if (c == '\n') {
-                    break;
-                }
-                else if(c == 72) {
-                    std::cout<<hist[cursor]<<std::flush;
-                    cursor = (cursor - 1) % MAX_HISTORY_COUNT;
-                    break;
-                }
-                input[i] = c;
-                i++;
-            }*/
-            char* input = readline(ouo_prompt);
+        
+        REPL ouolang;
+        ouolang
+        .set_prompt(ouo_prompt)
+        .readline([&](REPL& self, std::string line) -> bool {
             mpc_result_t r;
             
-            free(hist[current]);
-            hist[current] = strdup(input);
-            current = (current + 1) % MAX_HISTORY_COUNT;
-            
-            if (mpc_parse("<stdin>", input, ouo, &r)) {
+            if (mpc_parse("<stdin>", line.c_str(), ouo, &r)) {
                 /* On Success Print the AST */
                 ouoval * x = ouoval_eval(e, ouoval_read((mpc_ast_t *)r.output));
                 ouoval_println(e, x);
@@ -181,11 +170,21 @@ int main(int argc, const char * argv[]) {
                 mpc_err_print(r.error);
                 mpc_err_delete(r.error);
             }
-            free(input);
-        }
+            
+            return true;
+        })
+        .start();
+        
+        std::mutex mutex;
+        std::condition_variable cond;
+        std::thread t = std::thread([&] {
+            std::unique_lock<std::mutex> lock(mutex);
+            cond.wait(lock);
+            ouoenv_del(e);
+            mpc_cleanup(8, number, symbol, strings, comment, sexpr, qexpr, expression, ouo);
+        });
+        ouolang.condition(cond);
+        t.join();
     }
-    
-    ouoenv_del(e);
-    mpc_cleanup(8, number, symbol, strings, comment, sexpr, qexpr, expression, ouo);
     return 0;
 }
