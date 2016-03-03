@@ -9,7 +9,9 @@
 /* Begin PBXBuildFile section */
 		FE5757C81C6B717C00F8453C /* libgmp.10.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5757C61C6B717C00F8453C /* libgmp.10.dylib */; };
 		FE5757C91C6B717C00F8453C /* libgmpxx.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FE5757C71C6B717C00F8453C /* libgmpxx.4.dylib */; };
-		FECB376E1C17F32B00E831A9 /* ouoString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FECB376D1C17F32B00E831A9 /* ouoString.cpp */; };
+		FE5DE6301C88962D00E3676D /* REPL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FE5DE62E1C88962D00E3676D /* REPL.cpp */; };
+		FE8BC7401C87F692002BEFC3 /* libtermcap.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FE8BC73F1C87F692002BEFC3 /* libtermcap.tbd */; };
+		FEEBF3101C85925300078F52 /* ouoString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEEBF30F1C85925300078F52 /* ouoString.cpp */; };
 		FEF33FA51BF38068004AF7E8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEF33FA41BF38068004AF7E8 /* main.cpp */; };
 		FEF33FAD1BF38917004AF7E8 /* mpc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FEF33FAB1BF38917004AF7E8 /* mpc.cpp */; };
 		FEF33FAF1BF39203004AF7E8 /* libedit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FEF33FAE1BF39203004AF7E8 /* libedit.tbd */; };
@@ -33,7 +35,10 @@
 /* Begin PBXFileReference section */
 		FE5757C61C6B717C00F8453C /* libgmp.10.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgmp.10.dylib; path = ../../../../usr/local/lib/libgmp.10.dylib; sourceTree = "<group>"; };
 		FE5757C71C6B717C00F8453C /* libgmpxx.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgmpxx.4.dylib; path = ../../../../usr/local/lib/libgmpxx.4.dylib; sourceTree = "<group>"; };
-		FECB376D1C17F32B00E831A9 /* ouoString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ouoString.cpp; sourceTree = "<group>"; };
+		FE5DE62E1C88962D00E3676D /* REPL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = REPL.cpp; sourceTree = "<group>"; };
+		FE5DE62F1C88962D00E3676D /* REPL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REPL.h; sourceTree = "<group>"; };
+		FE8BC73F1C87F692002BEFC3 /* libtermcap.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libtermcap.tbd; path = usr/lib/libtermcap.tbd; sourceTree = SDKROOT; };
+		FEEBF30F1C85925300078F52 /* ouoString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ouoString.cpp; sourceTree = "<group>"; };
 		FEF33FA11BF38068004AF7E8 /* ouo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ouo; sourceTree = BUILT_PRODUCTS_DIR; };
 		FEF33FA41BF38068004AF7E8 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		FEF33FAB1BF38917004AF7E8 /* mpc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mpc.cpp; sourceTree = "<group>"; };
@@ -49,6 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FE8BC7401C87F692002BEFC3 /* libtermcap.tbd in Frameworks */,
 				FE5757C81C6B717C00F8453C /* libgmp.10.dylib in Frameworks */,
 				FE5757C91C6B717C00F8453C /* libgmpxx.4.dylib in Frameworks */,
 				FEF33FAF1BF39203004AF7E8 /* libedit.tbd in Frameworks */,
@@ -61,6 +67,7 @@
 		FEF33F981BF38067004AF7E8 = {
 			isa = PBXGroup;
 			children = (
+				FE8BC73F1C87F692002BEFC3 /* libtermcap.tbd */,
 				FE5757C61C6B717C00F8453C /* libgmp.10.dylib */,
 				FE5757C71C6B717C00F8453C /* libgmpxx.4.dylib */,
 				FEF33FAE1BF39203004AF7E8 /* libedit.tbd */,
@@ -82,10 +89,12 @@
 			children = (
 				FEF992241BF5E4A60084BA26 /* includes */,
 				FEF33FA41BF38068004AF7E8 /* main.cpp */,
+				FE5DE62E1C88962D00E3676D /* REPL.cpp */,
+				FE5DE62F1C88962D00E3676D /* REPL.h */,
 				FEF992121BF59DA10084BA26 /* ouoval.cpp */,
 				FEF992151BF59E3A0084BA26 /* ouoenv.cpp */,
-				27BA28A21C6B5FF0006F93C1 /* ouoString.cpp */,
 				FEF992181BF59FD00084BA26 /* ouobuiltin.cpp */,
+				FEEBF30F1C85925300078F52 /* ouoString.cpp */,
 				FEF33FAB1BF38917004AF7E8 /* mpc.cpp */,
 			);
 			path = ouo;
@@ -150,8 +159,9 @@
 				FEF9921A1BF59FD00084BA26 /* ouobuiltin.cpp in Sources */,
 				FEF33FAD1BF38917004AF7E8 /* mpc.cpp in Sources */,
 				FEF33FA51BF38068004AF7E8 /* main.cpp in Sources */,
+				FE5DE6301C88962D00E3676D /* REPL.cpp in Sources */,
 				FEF992141BF59DA10084BA26 /* ouoval.cpp in Sources */,
-				27BA28A31C6B5FF0006F93C1 /* ouoString.cpp in Sources */,
+				FEEBF3101C85925300078F52 /* ouoString.cpp in Sources */,
 				FEF992171BF59E3A0084BA26 /* ouoenv.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
